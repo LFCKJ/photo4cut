@@ -33,7 +33,7 @@ function generateSamplePhotos() {
   });
 }
 
-export default function CameraView({ onPhotosCaptured }) {
+export default function CameraView({ onPhotosCaptured, onEachCapture, photoItems = [] }) {
   const [countdownTime, setCountdownTime] = useState(5); // 5초 간격
   const {
     webcamRef,
@@ -52,6 +52,9 @@ export default function CameraView({ onPhotosCaptured }) {
   } = useWebcam({
     captureCount: 4,
     countdownSeconds: countdownTime,
+    onEachCapture: (photo, stepIndex) => {
+      if (onEachCapture) onEachCapture(photo, stepIndex);
+    },
     onComplete: (photos) => {
       if (onPhotosCaptured) onPhotosCaptured(photos);
     },
@@ -166,7 +169,22 @@ export default function CameraView({ onPhotosCaptured }) {
               >
                 {img ? (
                   <>
-                    <img src={img} alt={`컷 ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img
+                      src={photoItems[idx]?.converted || img}
+                      alt={`컷 ${idx + 1}`}
+                      className="w-full h-full object-cover transition-opacity duration-300"
+                    />
+                    {photoItems[idx]?.status === 'CONVERTING' && (
+                      <span className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-[11px] font-bold text-pink-300 backdrop-blur-[1px]">
+                        <span className="w-3.5 h-3.5 border-2 border-pink-400 border-t-transparent rounded-full animate-spin mb-1" />
+                        AI 변환 중
+                      </span>
+                    )}
+                    {photoItems[idx]?.status === 'DONE' && (
+                      <span className="absolute top-1.5 left-1.5 bg-pink-500/90 text-[10px] font-extrabold px-1.5 py-0.5 rounded text-white shadow">
+                        AI 변환완료
+                      </span>
+                    )}
                     <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-[11px] font-bold px-1.5 py-0.5 rounded text-white flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3 text-pink-400" /> #{idx + 1}
                     </span>

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Camera, Sparkles, RefreshCw, ChevronRight, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Camera, Sparkles, RefreshCw, ChevronRight, CheckCircle2, ArrowLeft, Wand2 } from 'lucide-react';
 import { PHOTO_FRAMES } from './constants/frames';
 import FrameSelector from './components/FrameSelector';
 import CameraView from './components/CameraView';
@@ -9,25 +9,27 @@ import PhotoStrip from './components/PhotoStrip';
 import QrModal from './components/QrModal';
 import PrintModal from './components/PrintModal';
 import { transformPhotosApi } from './api/photoApi';
+import { usePhotoBooth } from './hooks/usePhotoBooth';
 
 const STEPS = [
-  { id: 1, name: '프레임 선택' },
-  { id: 2, name: '4컷 사진 촬영' },
-  { id: 3, name: 'AI 스타일 변환' },
+  { id: 1, name: '프레임 & 스타일 선택' },
+  { id: 2, name: '실시간 4컷 촬영' },
+  { id: 3, name: 'AI 스타일 재조정' },
   { id: 4, name: '인생네컷 완성' },
 ];
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFrame, setSelectedFrame] = useState(PHOTO_FRAMES[0]);
-  
-  // 촬영된 4장의 원본 사진
-  const [rawPhotos, setRawPhotos] = useState([]);
-  
-  // AI 변환 적용된 4장의 사진 (기본은 원본)
-  const [displayPhotos, setDisplayPhotos] = useState([]);
-  const [selectedStyleId, setSelectedStyleId] = useState('disney');
+  const [selectedStyleId, setSelectedStyleId] = useState('ghibli');
   const [customPrompt, setCustomPrompt] = useState('');
+
+  // 실시간 비동기 백그라운드 파이프라인 훅 (ai (1).md 핵심)
+  const { photoItems, captureAndConvert, isProcessing, resetBooth } = usePhotoBooth(selectedStyleId);
+
+  // 촬영된 원본 및 최종 표시용 사진 목록
+  const [rawPhotos, setRawPhotos] = useState([]);
+  const [displayPhotos, setDisplayPhotos] = useState([]);
   const [isTransforming, setIsTransforming] = useState(false);
 
   // 최종 렌더링된 합성 DataURL
@@ -37,14 +39,28 @@ export default function App() {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [isPrintOpen, setIsPrintOpen] = useState(false);
 
-  // 1. 촬영 완료 핸들러
-  const handlePhotosCaptured = (photos) => {
-    setRawPhotos(photos);
-    setDisplayPhotos(photos);
-    setCurrentStep(3); // 스타일 변환 단계로 이동
+  // 1. 매 컷 촬영 즉시 비동기 백엔드 AI 변환 발송 (Instant Pipeline)
+  const handleEachCapture = (photo, stepIndex) => {
+    captureAndConvert(photo, stepIndex);
   };
 
-  // 2. AI 스타일 변환 적용 핸들러
+  // 2. 4회 촬영 모두 완료 시
+  const handlePhotosCaptured = (photos) => {
+    setRawPhotos(photos);
+
+    // 백그라운드에서 이미 변환 완료된 결과 매핑
+    const convertedList = photos.map((p, idx) => {
+      const match = photoItems.find((item) => item.index === idx + 1);
+      return match?.converted || p;
+    });
+
+    setDisplayPhotos(convertedList);
+    triggerConfetti();
+    // 촬영 끝나자마자 즉시 완성 화면(Step 4)으로 직행! (필요 시 Step 3에서 스타일 변경 가능)
+    setCurrentStep(4);
+  };
+
+  // 3. 완료 화면이나 Step 3에서 다른 스타일로 재변환 요청 시
   const handleApplyTransform = async () => {
     if (selectedStyleId === 'original') {
       setDisplayPhotos(rawPhotos);
@@ -83,8 +99,9 @@ export default function App() {
   const handleResetAll = () => {
     setRawPhotos([]);
     setDisplayPhotos([]);
-    setSelectedStyleId('original');
+    setSelectedStyleId('ghibli');
     setFinalDataUrl(null);
+    resetBooth();
     setCurrentStep(1);
   };
 
@@ -98,7 +115,7 @@ export default function App() {
           <Sparkles className="w-8 h-8 text-yellow-300" />
         </h1>
         <p className="text-xs md:text-sm text-slate-400">
-          2×2 필름 프레임 • 웹캠 자동 4회 캡처 • AI 스타일 변환 • QR 모바일 저장 & 프린터 인쇄
+          실시간 촬영 즉시 비동기 AI 변환 • 지브리/디즈니 3D/웹툰 • 2×2 필름 프레임 • QR 저장 & 프린트
         </p>
       </header>
 
@@ -137,7 +154,7 @@ export default function App() {
 
       {/* Main Container */}
       <main className="w-full max-w-3xl bg-slate-900/90 rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-800 backdrop-blur-xl">
-        {/* Step 1: 프레임 선택 */}
+        {/* Step 1: 프레임 및 사전 AI 스타일 선택 */}
         {currentStep === 1 && (
           <div className="space-y-6">
             <FrameSelector
@@ -145,20 +162,19 @@ export default function App() {
               onSelectFrame={setSelectedFrame}
             />
 
-            <div className="pt-4 border-t border-slate-800 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setCurrentStep(2)}
-                className="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-extrabold rounded-2xl shadow-xl flex items-center gap-2 transition active:scale-95"
-              >
-                <span>이 프레임으로 촬영하기</span>
-                <ChevronRight className="w-5 h-5" />
-              </button>
+            <div className="pt-4 border-t border-slate-800">
+              <StyleSelector
+                selectedStyleId={selectedStyleId}
+                onSelectStyle={setSelectedStyleId}
+                customPrompt={customPrompt}
+                onCustomPromptChange={setCustomPrompt}
+                onApplyTransform={() => setCurrentStep(2)}
+              />
             </div>
           </div>
         )}
 
-        {/* Step 2: 웹캠 촬영 */}
+        {/* Step 2: 웹캠 촬영 (촬영 즉시 비동기 AI 파이프라인 가동) */}
         {currentStep === 2 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -167,18 +183,24 @@ export default function App() {
                 onClick={() => setCurrentStep(1)}
                 className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
               >
-                <ArrowLeft className="w-4 h-4" /> 프레임 다시 선택
+                <ArrowLeft className="w-4 h-4" /> 프레임/스타일 다시 선택
               </button>
-              <span className="text-xs text-pink-400 font-semibold">
-                선택된 프레임: {selectedFrame.name}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-pink-400 font-semibold bg-pink-500/10 px-2.5 py-1 rounded-full border border-pink-500/30">
+                  ⚡ 실시간 비동기 AI 변환 활성화
+                </span>
+              </div>
             </div>
 
-            <CameraView onPhotosCaptured={handlePhotosCaptured} />
+            <CameraView
+              onPhotosCaptured={handlePhotosCaptured}
+              onEachCapture={handleEachCapture}
+              photoItems={photoItems}
+            />
           </div>
         )}
 
-        {/* Step 3: AI 스타일 변환 */}
+        {/* Step 3: AI 스타일 재조정 및 변환 (촬영 후 다른 스타일로 바꿀 때) */}
         {currentStep === 3 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -190,11 +212,10 @@ export default function App() {
                 <ArrowLeft className="w-4 h-4" /> 재촬영하기
               </button>
               <span className="text-xs text-slate-400">
-                촬영된 4장의 사진에 원하는 AI 감성을 입혀보세요.
+                다른 AI 스타일로 다시 변환해볼 수 있습니다.
               </span>
             </div>
 
-            {/* 촬영된 4장 미리보기 */}
             <div className="grid grid-cols-4 gap-2.5">
               {rawPhotos.map((p, idx) => (
                 <div key={idx} className="aspect-[3/4] rounded-xl overflow-hidden border border-slate-700 bg-black">
@@ -224,13 +245,22 @@ export default function App() {
                 </span>
                 <span className="text-sm font-bold text-white">{selectedFrame.name}</span>
               </div>
-              <button
-                type="button"
-                onClick={handleResetAll}
-                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
-              >
-                <RefreshCw className="w-3.5 h-3.5" /> 처음부터 다시 만들기
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(3)}
+                  className="text-xs text-pink-400 hover:text-pink-300 flex items-center gap-1 transition bg-pink-500/10 px-2.5 py-1 rounded-lg border border-pink-500/20"
+                >
+                  <Wand2 className="w-3.5 h-3.5" /> 다른 AI 스타일 적용
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetAll}
+                  className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" /> 처음부터
+                </button>
+              </div>
             </div>
 
             <PhotoStrip

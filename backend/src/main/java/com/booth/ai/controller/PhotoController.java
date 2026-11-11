@@ -1,5 +1,6 @@
 package com.booth.ai.controller;
 
+import com.booth.ai.dto.PhotoDto;
 import com.booth.ai.dto.TransformRequest;
 import com.booth.ai.dto.TransformResponse;
 import com.booth.ai.service.AiTransformService;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -32,6 +35,23 @@ public class PhotoController {
         ));
     }
 
+    /**
+     * [ai (1).md 핵심] 촬영 즉시 1컷 비동기 변환 엔드포인트
+     */
+    @PostMapping(value = "/convert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PhotoDto.ConvertResponse> convertSinglePhoto(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("style") String style,
+            @RequestParam(value = "sequenceIndex", defaultValue = "1") int sequenceIndex
+    ) throws IOException {
+        log.info("Received instant conversion request: cut #{} with style '{}'", sequenceIndex, style);
+        PhotoDto.ConvertResponse response = aiTransformService.transformImage(file, style, sequenceIndex);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 일괄 4장 변환 엔드포인트 (기존 호환)
+     */
     @PostMapping("/transform")
     public ResponseEntity<TransformResponse> transform(@RequestBody TransformRequest request) {
         log.info("Received photo transformation request: style={}", request.getStyle());
@@ -51,7 +71,6 @@ public class PhotoController {
 
         String id = photoStorageService.storePhoto(image);
 
-        // 현재 요청 호스트 기반 절대 URL 생성 (QR 스캔 시 외부 접속 가능하도록)
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
