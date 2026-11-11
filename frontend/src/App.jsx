@@ -26,7 +26,8 @@ export default function App() {
   
   // AI 변환 적용된 4장의 사진 (기본은 원본)
   const [displayPhotos, setDisplayPhotos] = useState([]);
-  const [selectedStyleId, setSelectedStyleId] = useState('original');
+  const [selectedStyleId, setSelectedStyleId] = useState('disney');
+  const [customPrompt, setCustomPrompt] = useState('');
   const [isTransforming, setIsTransforming] = useState(false);
 
   // 최종 렌더링된 합성 DataURL
@@ -54,7 +55,7 @@ export default function App() {
 
     try {
       setIsTransforming(true);
-      const res = await transformPhotosApi(rawPhotos, selectedStyleId);
+      const res = await transformPhotosApi(rawPhotos, selectedStyleId, customPrompt);
       if (res && res.transformedImages) {
         setDisplayPhotos(res.transformedImages);
       }
@@ -207,6 +208,8 @@ export default function App() {
               onSelectStyle={setSelectedStyleId}
               onApplyTransform={handleApplyTransform}
               isTransforming={isTransforming}
+              customPrompt={customPrompt}
+              onCustomPromptChange={setCustomPrompt}
             />
           </div>
         )}
