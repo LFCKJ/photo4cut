@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ai-photobooth-service
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 80MB
+
+ai:
+  api:
+    provider-url: ${AI_API_URL:https://api.replicate.com/v1}
+    api-key: ${AI_API_KEY:}
