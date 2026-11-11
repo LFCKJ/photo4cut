@@ -81,21 +81,23 @@ export default function PhotoStrip({
         ctx.drawImage(overlayImg, 0, 0, frame.width, frame.height);
       }
 
-      // 4. 하단 중앙 또는 우측에 날짜 & 커스텀 문구 스탬프 (자연스럽게)
-      const now = new Date();
-      const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(
-        now.getDate()
-      ).padStart(2, '0')}`;
+      // 4. 하단 중앙 날짜 & 커스텀 문구 스탬프 (프레임 너비에 비례)
+      if (customText && customText.trim().length > 0) {
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(
+          now.getDate()
+        ).padStart(2, '0')}`;
 
-      ctx.save();
-      ctx.font = '600 14px monospace';
-      ctx.fillStyle = frame.theme === 'black' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.65)';
-      ctx.textAlign = 'center';
-      
-      // 프레임 하단 여백 위치에 찍기
-      const textY = frame.height - 18;
-      ctx.fillText(`${customText} | ${dateStr}`, frame.width / 2, textY);
-      ctx.restore();
+        ctx.save();
+        const fontSize = Math.max(10, Math.min(14, Math.floor(frame.width / 45)));
+        ctx.font = `600 ${fontSize}px sans-serif`;
+        ctx.fillStyle = frame.theme === 'black' ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.65)';
+        ctx.textAlign = 'center';
+        
+        const textY = frame.height - 14;
+        ctx.fillText(`${customText} | ${dateStr}`, frame.width / 2, textY);
+        ctx.restore();
+      }
 
       // 5. DataURL 추출
       const dataUrl = canvas.toDataURL('image/png', 1.0);
