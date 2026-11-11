@@ -41,10 +41,10 @@ export const PHOTO_FRAMES = [
     width: 320,
     height: 955,
     slots: [
-      { id: 0, x: 28, y: 28, width: 264, height: 184 },
-      { id: 1, x: 28, y: 224, width: 264, height: 184 },
-      { id: 2, x: 28, y: 420, width: 264, height: 192 },
-      { id: 3, x: 28, y: 628, width: 264, height: 176 },
+      { id: 0, x: 25, y: 26, width: 272, height: 191 },
+      { id: 1, x: 25, y: 220, width: 272, height: 193 },
+      { id: 2, x: 25, y: 416, width: 272, height: 203 },
+      { id: 3, x: 25, y: 623, width: 272, height: 186 },
     ],
   },
   {
@@ -57,10 +57,10 @@ export const PHOTO_FRAMES = [
     width: 320,
     height: 955,
     slots: [
-      { id: 0, x: 28, y: 36, width: 264, height: 176 },
-      { id: 1, x: 28, y: 228, width: 264, height: 184 },
-      { id: 2, x: 28, y: 424, width: 264, height: 192 },
-      { id: 3, x: 28, y: 624, width: 264, height: 184 },
+      { id: 0, x: 25, y: 30, width: 272, height: 191 },
+      { id: 1, x: 25, y: 225, width: 272, height: 191 },
+      { id: 2, x: 25, y: 420, width: 272, height: 203 },
+      { id: 3, x: 25, y: 627, width: 272, height: 185 },
     ],
   },
   {
@@ -73,10 +73,10 @@ export const PHOTO_FRAMES = [
     width: 736,
     height: 1308,
     slots: [
-      { id: 0, x: 196, y: 232, width: 344, height: 216 },
-      { id: 1, x: 196, y: 464, width: 344, height: 216 },
-      { id: 2, x: 196, y: 696, width: 344, height: 216 },
-      { id: 3, x: 196, y: 928, width: 344, height: 216 },
+      { id: 0, x: 192, y: 228, width: 354, height: 222 },
+      { id: 1, x: 192, y: 460, width: 354, height: 217 },
+      { id: 2, x: 192, y: 684, width: 354, height: 217 },
+      { id: 3, x: 192, y: 910, width: 354, height: 220 },
     ],
   },
   {
@@ -89,10 +89,10 @@ export const PHOTO_FRAMES = [
     width: 736,
     height: 1308,
     slots: [
-      { id: 0, x: 64, y: 88, width: 296, height: 280 },
-      { id: 1, x: 404, y: 436, width: 280, height: 272 },
-      { id: 2, x: 44, y: 512, width: 272, height: 264 },
-      { id: 3, x: 408, y: 876, width: 296, height: 288 },
+      { id: 0, x: 60, y: 87, width: 300, height: 292 },
+      { id: 1, x: 400, y: 433, width: 287, height: 278 },
+      { id: 2, x: 41, y: 506, width: 280, height: 273 },
+      { id: 3, x: 403, y: 874, width: 307, height: 300 },
     ],
   },
 ];

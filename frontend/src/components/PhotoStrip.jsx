@@ -13,7 +13,9 @@ export default function PhotoStrip({
 }) {
   const canvasRef = useRef(null);
   const [renderedImageUrl, setRenderedImageUrl] = useState(null);
-  const [customText, setCustomText] = useState('AI 인생네컷 • MEMORY');
+  const [customText, setCustomText] = useState(
+    frame.id.includes('film') ? 'AI 인생네컷 • MEMORY' : ''
+  );
   const [isRendering, setIsRendering] = useState(true);
 
   // 이미지 비동기 로더
