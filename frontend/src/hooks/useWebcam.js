@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-export function useWebcam({ captureCount = 4, countdownSeconds = 5, onEachCapture, onComplete } = {}) {
+export function useWebcam({ captureCount = 4, countdownSeconds = 5, onComplete } = {}) {
   const webcamRef = useRef(null);
   const [capturedImages, setCapturedImages] = useState([]);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -45,15 +45,10 @@ export function useWebcam({ captureCount = 4, countdownSeconds = 5, onEachCaptur
     }
 
     if (countdown === 0) {
-      // 셔터 찰칵!
       triggerFlash();
       const photo = capturePhoto();
 
       if (photo) {
-        const stepNum = currentStep;
-        if (onEachCapture) {
-          onEachCapture(photo, stepNum);
-        }
         setCapturedImages((prev) => {
           const next = [...prev, photo];
           if (next.length >= captureCount) {
