@@ -39,6 +39,16 @@ export default function App() {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [isPrintOpen, setIsPrintOpen] = useState(false);
 
+  // 백그라운드 AI 변환 완료 시 displayPhotos 실시간 동기화
+  useEffect(() => {
+    if (rawPhotos.length === 0) return;
+    const updated = rawPhotos.map((p, idx) => {
+      const match = photoItems.find((item) => item.index === idx + 1);
+      return match?.converted || p;
+    });
+    setDisplayPhotos(updated);
+  }, [photoItems, rawPhotos]);
+
   // 1. 매 컷 촬영 즉시 비동기 백엔드 AI 변환 발송 (Instant Pipeline)
   const handleEachCapture = (photo, stepIndex) => {
     captureAndConvert(photo, stepIndex);
