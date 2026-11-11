@@ -129,13 +129,21 @@ export default function PhotoStrip({
       {/* Hidden high-res canvas */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Preview Card */}
-      <div className="relative max-w-sm w-full bg-slate-950 p-3 rounded-2xl border-2 border-slate-700 shadow-2xl flex flex-col items-center">
+      {/* Preview Card: 프레임 테마에 따라 최적의 대비 배경 적용 */}
+      <div
+        className={`relative max-w-sm w-full p-3.5 rounded-2xl border-2 shadow-2xl flex flex-col items-center transition-colors ${
+          frame.theme === 'black'
+            ? 'bg-gradient-to-b from-slate-800/90 to-slate-900/90 border-slate-600/80 shadow-black/40'
+            : 'bg-gradient-to-b from-slate-950 to-slate-900 border-slate-700 shadow-slate-950/60'
+        }`}
+      >
         {renderedImageUrl ? (
           <img
             src={renderedImageUrl}
-            alt="AI 인생네컷 최종본"
-            className="w-full h-auto rounded-lg shadow-md object-contain"
+            alt="인생네컷 최종본"
+            className={`w-full h-auto rounded-lg shadow-xl object-contain transition-all ${
+              frame.theme === 'black' ? 'ring-1 ring-white/20' : 'ring-1 ring-slate-700'
+            }`}
           />
         ) : (
           <div className="w-full aspect-[2/3] flex items-center justify-center text-slate-400">
