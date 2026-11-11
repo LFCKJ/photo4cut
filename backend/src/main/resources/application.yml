@@ -11,9 +11,7 @@ spring:
 
 ai:
   api:
-    # 기본 AI 엔진: Google AI Studio (Gemini / Imagen 3)
-    provider: ${AI_PROVIDER:google}
+    provider: google
     google-api-key: ${GEMINI_API_KEY:}
-    model: ${GEMINI_MODEL:gemini-2.0-flash}
-    image-model: ${IMAGEN_MODEL:imagen-3.0-generate-002}
+    model: gemini-3.8-flash
     provider-url: https://generativelanguage.googleapis.com/v1beta
