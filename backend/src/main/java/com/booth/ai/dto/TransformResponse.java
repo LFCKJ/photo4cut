@@ -14,6 +14,7 @@ import java.util.List;
 public class TransformResponse {
     private boolean success;
     private String style;
+    private List<String> styles;
     private List<String> transformedImages;
     private String message;
 }

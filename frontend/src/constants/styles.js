@@ -1,0 +1,67 @@
+export const STYLE_PRESETS = [
+  {
+    id: 'BEAUTY_RETOUCH',
+    name: 'AI 뷰티 보정',
+    tag: '미인·미남상 보정',
+    desc: '자연스러운 피부 결 보정과 화사한 스튜디오 조명으로 미인·미남상 인물 완성',
+    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/40',
+    dotColor: 'bg-pink-400',
+    iconName: 'Sparkles',
+    previewGradient: 'from-rose-400 via-pink-500 to-amber-300',
+    exampleCaption: '1컷 추천 · 자연스러운 피부/윤곽 보정',
+  },
+  {
+    id: 'GHIBLI',
+    name: '지브리 애니메이션',
+    tag: '2D Anime Style',
+    desc: '따뜻한 감성의 일본 셀 애니메이션, 또렷한 선화와 화사한 동화풍 색감',
+    badgeColor: 'bg-lime-500/20 text-lime-300 border-lime-500/40',
+    dotColor: 'bg-lime-400',
+    iconName: 'Wand2',
+    previewGradient: 'from-lime-500 via-emerald-500 to-teal-700',
+    exampleCaption: '2컷 추천 · 감성 2D 애니메이션 변환',
+  },
+  {
+    id: 'DISNEY_3D',
+    name: '디즈니 3D 캐릭터',
+    tag: '3D Animation',
+    desc: '입체적인 3D 극장판 애니메이션 캐릭터, 살아있는 표정과 부드러운 림라이트',
+    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
+    dotColor: 'bg-sky-400',
+    iconName: 'Heart',
+    previewGradient: 'from-sky-400 via-blue-500 to-indigo-700',
+    exampleCaption: '2컷 추천 · 입체 3D 애니메이션 변환',
+  },
+  {
+    id: 'NEON_CLUB',
+    name: '네온 클럽 무드',
+    tag: 'Club Neon Light',
+    desc: '어두운 밤 퍼플·마젠타·블루 네온 조명이 감도는 몽환적인 클럽 분위기',
+    badgeColor: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
+    dotColor: 'bg-fuchsia-400',
+    iconName: 'Zap',
+    previewGradient: 'from-fuchsia-600 via-purple-700 to-cyan-600',
+    exampleCaption: '3컷 추천 · 몽환적인 네온 클럽 조명',
+  },
+  {
+    id: 'RENAISSANCE',
+    name: '르네상스 명화',
+    tag: 'Renaissance Oil',
+    desc: '고풍스러운 명암 대비와 클래식 유화 붓터치가 돋보이는 르네상스 초상화',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    dotColor: 'bg-amber-400',
+    iconName: 'Crown',
+    previewGradient: 'from-amber-600 via-orange-800 to-stone-900',
+    exampleCaption: '4컷 추천 · 고전 르네상스 유화 명화',
+  },
+];
+
+/**
+ * 기본 4컷 예시 조합 (1컷 뷰티 보정 -> 2컷 애니메이션 -> 3컷 네온 클럽 -> 4컷 르네상스)
+ */
+export const DEFAULT_EXAMPLE_STYLES = [
+  'BEAUTY_RETOUCH',
+  'GHIBLI',
+  'NEON_CLUB',
+  'RENAISSANCE',
+];

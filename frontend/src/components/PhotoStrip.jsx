@@ -1,36 +1,94 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Download, RefreshCw, Printer, QrCode, Sparkles } from 'lucide-react';
+import { Download, RefreshCw, Printer, QrCode, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { STYLE_PRESETS } from '../constants/styles';
 
 /**
- * HTML5 Canvas 2x2 필름 프레임 합성 컴포넌트
+ * HTML5 Canvas 2x2 및 1x4 인생네컷 프레임 합성 컴포넌트
  */
 export default function PhotoStrip({
   frame,
   photos,
+  appliedStyles = [],
   onExportReady,
   onOpenQr,
   onOpenPrint,
+  onChangeStyles,
 }) {
   const canvasRef = useRef(null);
   const [renderedImageUrl, setRenderedImageUrl] = useState(null);
   const [customText, setCustomText] = useState(
-    frame.id.includes('film') ? 'AI 인생네컷 • MEMORY' : ''
+    frame.id.includes('film') ? 'AI 인생네컷 • 4-CONCEPTS' : ''
   );
   const [isRendering, setIsRendering] = useState(true);
 
-  // 이미지 비동기 로더
-  const loadImage = (src) => {
-    return new Promise((resolve, reject) => {
+  // 안전한 이미지 비동기 로더 (CORS & 타임아웃 대비 원본 폴백 탑재)
+  const loadImageSafe = (src, fallbackSrc = null, timeoutMs = 3500) => {
+    return new Promise((resolve) => {
+      let isDone = false;
+
+      const finish = (resultImg) => {
+        if (!isDone) {
+          isDone = true;
+          resolve(resultImg);
+        }
+      };
+
+      // 타임아웃 안전장치: 지정 시간 내에 응답 없으면 fallback 반환
+      const timer = setTimeout(() => {
+        if (fallbackSrc && fallbackSrc !== src) {
+          const fbImg = new Image();
+          fbImg.onload = () => finish(fbImg);
+          fbImg.onerror = () => finish(null);
+          fbImg.src = fallbackSrc;
+        } else {
+          finish(null);
+        }
+      }, timeoutMs);
+
+      // 1차 시도 (crossOrigin anonymous)
       const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = (err) => reject(err);
+      if (!src.startsWith('data:')) {
+        img.crossOrigin = 'anonymous';
+      }
+
+      img.onload = () => {
+        clearTimeout(timer);
+        finish(img);
+      };
+
+      img.onerror = () => {
+        // 2차 시도: crossOrigin 없이 재시도
+        if (!src.startsWith('data:')) {
+          const retryImg = new Image();
+          retryImg.onload = () => {
+            clearTimeout(timer);
+            finish(retryImg);
+          };
+          retryImg.onerror = () => {
+            clearTimeout(timer);
+            if (fallbackSrc && fallbackSrc !== src) {
+              const fbImg = new Image();
+              fbImg.onload = () => finish(fbImg);
+              fbImg.onerror = () => finish(null);
+              fbImg.src = fallbackSrc;
+            } else {
+              finish(null);
+            }
+          };
+          retryImg.src = src;
+        } else {
+          clearTimeout(timer);
+          finish(null);
+        }
+      };
+
       img.src = src;
     });
   };
 
   // Canvas에 이미지 Cover(비율 유지 꽉 차게) 그리기
   const drawCoverImage = (ctx, img, targetX, targetY, targetW, targetH) => {
+    if (!img) return;
     const imgRatio = img.width / img.height;
     const targetRatio = targetW / targetH;
     let sx, sy, sw, sh;
@@ -52,7 +110,10 @@ export default function PhotoStrip({
 
   // 4컷 합성 렌더링 메인 함수
   const renderCanvas = useCallback(async () => {
-    if (!canvasRef.current || !frame || !photos || photos.length === 0) return;
+    if (!canvasRef.current || !frame || !photos || photos.length === 0) {
+      setIsRendering(false);
+      return;
+    }
     setIsRendering(true);
 
     const canvas = canvasRef.current;
@@ -72,18 +133,26 @@ export default function PhotoStrip({
         const slot = frame.slots[i];
         const photoSrc = photos[i] || photos[0];
         if (photoSrc) {
-          const img = await loadImage(photoSrc);
-          drawCoverImage(ctx, img, slot.x, slot.y, slot.width, slot.height);
+          const img = await loadImageSafe(photoSrc, photos[0]);
+          if (img) {
+            drawCoverImage(ctx, img, slot.x, slot.y, slot.width, slot.height);
+          }
         }
       }
 
       // 3. 투명 프레임 오버레이 덮기 (필름 텍스처, 텍스트, 경계선)
       if (frame.overlay) {
-        const overlayImg = await loadImage(frame.overlay);
-        ctx.drawImage(overlayImg, 0, 0, frame.width, frame.height);
+        try {
+          const overlayImg = await loadImageSafe(frame.overlay, null, 2500);
+          if (overlayImg) {
+            ctx.drawImage(overlayImg, 0, 0, frame.width, frame.height);
+          }
+        } catch (e) {
+          console.warn('프레임 오버레이 로드 건너뜀:', e);
+        }
       }
 
-      // 4. 하단 중앙 날짜 & 커스텀 문구 스탬프 (프레임 너비에 비례)
+      // 4. 하단 중앙 날짜 & 커스텀 문구 스탬프
       if (customText && customText.trim().length > 0) {
         const now = new Date();
         const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(
@@ -95,7 +164,7 @@ export default function PhotoStrip({
         ctx.font = `600 ${fontSize}px sans-serif`;
         ctx.fillStyle = frame.theme === 'black' ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.65)';
         ctx.textAlign = 'center';
-        
+
         const textY = frame.height - 14;
         ctx.fillText(`${customText} | ${dateStr}`, frame.width / 2, textY);
         ctx.restore();
@@ -122,7 +191,7 @@ export default function PhotoStrip({
     if (!renderedImageUrl) return;
     const a = document.createElement('a');
     a.href = renderedImageUrl;
-    a.download = `photo4cut_${Date.now()}.png`;
+    a.download = `photo4cut_4concepts_${Date.now()}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -133,7 +202,41 @@ export default function PhotoStrip({
       {/* Hidden high-res canvas */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Preview Card: 프레임 테마에 따라 최적의 대비 배경 적용 */}
+      {/* Applied Concepts Bar */}
+      {appliedStyles && appliedStyles.length > 0 && (
+        <div className="w-full max-w-md mb-4 p-3 bg-slate-900/80 rounded-2xl border border-slate-800 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+              <span>적용된 4가지 컨셉</span>
+            </span>
+            {onChangeStyles && (
+              <button
+                type="button"
+                onClick={onChangeStyles}
+                className="text-xs text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1 transition"
+              >
+                <SlidersHorizontal className="w-3 h-3" /> 컨셉 변경하기
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-4 gap-1.5">
+            {appliedStyles.map((stId, i) => {
+              const preset = STYLE_PRESETS.find((p) => p.id === stId) || STYLE_PRESETS[0];
+              return (
+                <div
+                  key={i}
+                  className={`text-center py-1 px-1 rounded-lg border text-[10px] font-bold truncate ${preset.badgeColor}`}
+                >
+                  #{i + 1} {preset.name.split(' ')[0]}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Preview Card */}
       <div
         className={`relative max-w-sm w-full p-3.5 rounded-2xl border-2 shadow-2xl flex flex-col items-center transition-colors ${
           frame.theme === 'black'

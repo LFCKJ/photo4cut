@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_BASE = '/api/v1/photos';
+// Vercel 등 외부 배포 시 VITE_API_BASE_URL 환경변수 사용 (예: https://123.45.67.89.nip.io)
+// 미설정 시 로컬 Vite 프록시 또는 Vercel Rewrites를 타도록 상대 경로('') 사용
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+export const API_ORIGIN = rawBaseUrl.replace(/\/+$/, '');
+const API_BASE = `${API_ORIGIN}/api/v1/photos`;
 
 export async function checkBackendHealth() {
   try {
@@ -12,12 +16,29 @@ export async function checkBackendHealth() {
   }
 }
 
-export async function transformPhotosApi(images, style, prompt = '') {
+/**
+ * 4컷 사진에 대해 개별 스타일 배열(styles) 또는 단일 스타일(style)을 적용하여 변환 요청
+ * @param {Array<string>} images - 4장의 Base64 Data URL 배열
+ * @param {Array<string>|string} styles - 각 슬롯별 스타일 ID 배열 또는 단일 스타일 ID
+ * @param {string} prompt - 추가 프롬프트 (선택)
+ */
+export async function transformPhotosApi(images, styles, prompt = '') {
   try {
-    const res = await axios.post(`${API_BASE}/transform`, {
+    const payload = {
       images,
-      style,
       prompt,
+    };
+
+    if (Array.isArray(styles)) {
+      payload.styles = styles;
+      payload.style = styles[0] || 'ORIGINAL';
+    } else {
+      payload.style = styles || 'ORIGINAL';
+      payload.styles = [styles, styles, styles, styles];
+    }
+
+    const res = await axios.post(`${API_BASE}/transform`, payload, {
+      timeout: 120000, // 120초 타임아웃 (Nano Banana 2 고해상도 4컷 생성 대기)
     });
     return res.data;
   } catch (error) {
@@ -25,3 +46,17 @@ export async function transformPhotosApi(images, style, prompt = '') {
     throw error;
   }
 }
+
+/**
+ * 최종 합성본을 QR 코드 및 다운로드용으로 서버에 임시 저장
+ */
+export async function sharePhotoApi(imageDataUrl) {
+  try {
+    const res = await axios.post(`${API_BASE}/share`, { image: imageDataUrl });
+    return res.data;
+  } catch (error) {
+    console.error('Share Photo API failed:', error);
+    throw error;
+  }
+}
+

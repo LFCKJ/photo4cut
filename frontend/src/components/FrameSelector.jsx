@@ -10,8 +10,6 @@ export default function FrameSelector({ selectedFrameId, onSelectFrame }) {
         return 'bg-gradient-to-b from-slate-100 to-slate-200 border-slate-300';
       case 'blue':
         return 'bg-gradient-to-b from-slate-900 to-slate-950 border-slate-800';
-      case 'yellow':
-        return 'bg-gradient-to-b from-slate-900 to-slate-950 border-slate-800';
       case 'white':
       default:
         return 'bg-gradient-to-b from-slate-900 to-slate-950 border-slate-700';
@@ -24,8 +22,6 @@ export default function FrameSelector({ selectedFrameId, onSelectFrame }) {
         return { label: '블랙 필름', style: 'bg-black text-white border-slate-700' };
       case 'blue':
         return { label: '하치와레 블루', style: 'bg-sky-500/20 text-sky-300 border-sky-500/30' };
-      case 'yellow':
-        return { label: '우사기 옐로우', style: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
       case 'white':
       default:
         return { label: '화이트/콜라주', style: 'bg-white text-slate-900 border-slate-300' };
@@ -34,17 +30,17 @@ export default function FrameSelector({ selectedFrameId, onSelectFrame }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-3.5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
         <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-pink-400" />
-          <span>포토 프레임 선택 (총 6종)</span>
+          <span>포토 프레임 선택 (총 {PHOTO_FRAMES.length}종)</span>
         </h3>
         <span className="text-xs text-slate-400">
-          원하는 캐릭터 및 필름 프레임을 선택해 주세요
+          원하는 4컷 프레임을 선택해 주세요
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         {PHOTO_FRAMES.map((frame) => {
           const isSelected = selectedFrameId === frame.id;
           const isBlackFrame = frame.theme === 'black';
@@ -55,15 +51,26 @@ export default function FrameSelector({ selectedFrameId, onSelectFrame }) {
               key={frame.id}
               type="button"
               onClick={() => onSelectFrame(frame)}
-              className={`relative group rounded-2xl overflow-hidden border-2 transition-all p-3 text-left flex flex-col justify-between ${
+              className={`relative group rounded-2xl overflow-hidden border-2 transition-all duration-200 p-3 text-left flex flex-col justify-between hover:-translate-y-0.5 ${
                 isSelected
-                  ? 'border-pink-500 bg-slate-800/95 shadow-xl shadow-pink-500/25 ring-2 ring-pink-500/20 scale-[1.02]'
-                  : 'border-slate-800 bg-slate-850 hover:border-slate-600 bg-slate-900/60'
+                  ? 'border-pink-500 bg-slate-800/95 shadow-xl shadow-pink-500/25 ring-2 ring-pink-500/25'
+                  : 'border-slate-800 bg-slate-900/70 hover:border-slate-600 hover:bg-slate-800/70'
               }`}
             >
-              {/* Thumbnail Display Box: 프레임 테마별 지능형 대비 배경 */}
+              {/* Check Circle (Top Right) */}
               <div
-                className={`w-full h-48 rounded-xl overflow-hidden flex items-center justify-center p-2 mb-2.5 transition-colors border ${getThumbnailBackdrop(
+                className={`absolute top-2.5 right-2.5 z-10 w-6 h-6 rounded-full flex items-center justify-center border transition-all ${
+                  isSelected
+                    ? 'bg-pink-500 border-pink-400 text-white shadow-md shadow-pink-500/40 scale-105'
+                    : 'border-slate-700/80 bg-slate-900/80 text-transparent'
+                }`}
+              >
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+              </div>
+
+              {/* Thumbnail Display Box */}
+              <div
+                className={`w-full h-44 rounded-xl overflow-hidden flex items-center justify-center p-2 mb-3 transition-colors border ${getThumbnailBackdrop(
                   frame
                 )}`}
               >
@@ -79,26 +86,15 @@ export default function FrameSelector({ selectedFrameId, onSelectFrame }) {
               </div>
 
               {/* Title & Info Bar */}
-              <div className="w-full flex items-center justify-between pt-1">
-                <div className="space-y-1 min-w-0 pr-1">
-                  <span
-                    className={`inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded-full border ${badge.style}`}
-                  >
-                    {badge.label}
-                  </span>
-                  <p className="font-bold text-xs text-white truncate">{frame.name}</p>
-                </div>
-
-                {/* Check Circle */}
-                <div
-                  className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center border transition-all ${
-                    isSelected
-                      ? 'bg-pink-500 border-pink-500 text-white shadow-md'
-                      : 'border-slate-700 bg-slate-900 text-transparent'
-                  }`}
+              <div className="w-full space-y-1.5">
+                <span
+                  className={`inline-block text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badge.style}`}
                 >
-                  <Check className="w-3 h-3 stroke-[3]" />
-                </div>
+                  {badge.label}
+                </span>
+                <p className="font-bold text-xs text-white line-clamp-2 leading-snug">
+                  {frame.name}
+                </p>
               </div>
             </button>
           );

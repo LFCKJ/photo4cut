@@ -8,9 +8,11 @@ import com.booth.ai.service.PhotoStorageService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +26,11 @@ import java.util.Map;
 public class PhotoController {
 
     private final AiTransformService aiTransformService;
+    private final com.booth.ai.service.GeminiImageService geminiImageService;
     private final PhotoStorageService photoStorageService;
+
+    @Value("${app.public-base-url:}")
+    private String publicBaseUrl;
 
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> health() {
@@ -32,6 +38,23 @@ public class PhotoController {
                 "status", "UP",
                 "service", "AI Photo Booth Service",
                 "version", "0.0.1"
+        ));
+    }
+
+    /**
+     * [enum_gemini_api.md] Gemini 기반 단일 컷 직접 변환 엔드포인트
+     */
+    @PostMapping(value = "/gemini-transform", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> transformWithGeminiDirect(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "concept", defaultValue = "BEAUTY_RETOUCH") String concept
+    ) throws IOException {
+        log.info("Gemini 직접 변환 요청: concept='{}'", concept);
+        String resultImageUrl = geminiImageService.transformPhoto(file, concept);
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "concept", concept,
+                "imageUrl", resultImageUrl
         ));
     }
 
@@ -71,12 +94,26 @@ public class PhotoController {
 
         String id = photoStorageService.storePhoto(image);
 
-        String scheme = request.getScheme();
-        String serverName = request.getServerName();
-        int serverPort = request.getServerPort();
-        
-        String portStr = (serverPort == 80 || serverPort == 443) ? "" : ":" + serverPort;
-        String fullDownloadUrl = scheme + "://" + serverName + portStr + "/api/v1/photos/download/" + id;
+        String fullDownloadUrl;
+        if (StringUtils.hasText(publicBaseUrl)) {
+            String base = publicBaseUrl.replaceAll("/+$", "");
+            fullDownloadUrl = base + "/api/v1/photos/download/" + id;
+        } else {
+            String scheme = request.getHeader("X-Forwarded-Proto");
+            if (!StringUtils.hasText(scheme)) {
+                scheme = request.getScheme();
+            }
+
+            String host = request.getHeader("X-Forwarded-Host");
+            if (!StringUtils.hasText(host)) {
+                host = request.getServerName();
+                int serverPort = request.getServerPort();
+                if (serverPort != 80 && serverPort != 443 && serverPort > 0) {
+                    host = host + ":" + serverPort;
+                }
+            }
+            fullDownloadUrl = scheme + "://" + host + "/api/v1/photos/download/" + id;
+        }
 
         return ResponseEntity.ok(Map.of(
                 "id", id,

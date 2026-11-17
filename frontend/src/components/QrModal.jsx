@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { X, Copy, Check, Smartphone, Download, Loader2 } from 'lucide-react';
-import axios from 'axios';
+import { X, Copy, Check, Smartphone, Loader2 } from 'lucide-react';
+import { sharePhotoApi, API_ORIGIN } from '../api/photoApi';
 
 export default function QrModal({ isOpen, onClose, imageDataUrl }) {
   const [downloadUrl, setDownloadUrl] = useState('');
@@ -15,16 +15,18 @@ export default function QrModal({ isOpen, onClose, imageDataUrl }) {
     setLoading(true);
 
     // 백엔드에 이미지 공유 요청
-    axios
-      .post('/api/v1/photos/share', { image: imageDataUrl })
-      .then((res) => {
+    sharePhotoApi(imageDataUrl)
+      .then((data) => {
         if (!isMounted) return;
-        const url = res.data.downloadUrl || `${window.location.origin}${res.data.downloadPath}`;
+        const baseOrigin = API_ORIGIN || window.location.origin;
+        const url = data.downloadPath
+          ? `${baseOrigin}${data.downloadPath}`
+          : data.downloadUrl;
         setDownloadUrl(url);
       })
       .catch((err) => {
         console.warn('Share API fallback to local data url:', err);
-        // Fallback: 현재 윈도우 URL 또는 dataUrl
+        // Fallback: 현재 윈도우 URL
         if (!isMounted) return;
         setDownloadUrl(window.location.href);
       })
