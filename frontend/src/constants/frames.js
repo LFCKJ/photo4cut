@@ -41,10 +41,10 @@ export const PHOTO_FRAMES = [
     width: 675,
     height: 1200,
     slots: [
-      { id: 0, x: 84, y: 510, width: 224, height: 226 },
-      { id: 1, x: 367, y: 510, width: 218, height: 224 },
-      { id: 2, x: 91, y: 850, width: 214, height: 220 },
-      { id: 3, x: 370, y: 849, width: 214, height: 220 },
+      { id: 0, x: 82, y: 508, width: 228, height: 230 },
+      { id: 1, x: 365, y: 508, width: 222, height: 228 },
+      { id: 2, x: 89, y: 848, width: 218, height: 224 },
+      { id: 3, x: 368, y: 847, width: 218, height: 224 },
     ],
   },
   {

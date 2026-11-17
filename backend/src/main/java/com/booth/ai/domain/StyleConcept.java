@@ -44,7 +44,9 @@ public enum StyleConcept {
         "1. The exact facial features, expressions, hairstyles, and identities of all people in the photo. " +
         "2. Their exact poses, hand gestures (such as peace signs or finger hearts), body positions, and clothing details (logos, numbers, colors). " +
         "3. The overall framing and composition. " +
-        "Do not add or remove people or major objects. Only change the rendering medium, lighting, texture, and artistic style.";
+        "Do not add or remove people or major objects. " +
+        "Do NOT add any borders, Polaroid frames, film frames, text, dates, watermarks, or captions around or inside the image. " +
+        "Fill the entire image edge-to-edge and only change the rendering medium, lighting, texture, and artistic style.";
 
     public static StyleConcept fromString(String conceptName) {
         if (conceptName == null || conceptName.isBlank()) {
