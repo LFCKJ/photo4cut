@@ -7,34 +7,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum StyleConcept {
 
-    // 1. AI 보정 미인·미남상 (피부 보정, 조명, 윤곽 보정)
     BEAUTY_RETOUCH(
         "AI 뷰티 보정",
-        "Apply high-end Korean studio beauty retouching to this portrait photo. Smooth and brighten the skin naturally, remove minor blemishes, gently enhance facial proportions and eye brightness, and add soft flattering studio key lighting with a clean healthy glow. Create a polished, naturally attractive idol-like portrait while strictly preserving each person's real identity, expression, hairstyle, pose, and outfit."
+        "Enhance this portrait into a high-end Korean studio beauty photograph. Apply natural, luminous skin retouching, bright soft studio key lighting, subtle rosy cheeks, and crisp eye clarity while keeping the person's exact facial identity, hairstyle, outfit, and hand gesture completely authentic and photorealistic. Do not turn it into an illustration."
     ),
-
-    // 2. 지브리 / 감성 셀 애니메이션
     GHIBLI(
         "지브리 애니메이션",
-        "Transform this photo into a classic 1990s Japanese hand-drawn cel animation style. Lush painted gouache background, clean anime line art, expressive anime eyes, soft warm lighting, nostalgic anime movie screenshot aesthetic, preserving the exact likeness, hairstyles, outfits, and poses of all subjects."
+        "Transform this photo into a classic Studio Ghibli hand-drawn 2D cel animation style. Lush painted gouache background, clean expressive anime line art, soft warm lighting, nostalgic anime movie aesthetic, preserving the exact likeness, hairstyle, outfit, and poses of the subject."
     ),
-
-    // 3. 픽사 / 디즈니 3D 애니메이션
     DISNEY_3D(
         "디즈니 3D 캐릭터",
-        "Transform the people and scene into a modern 3D animated feature film style. Expressive stylized 3D characters, smooth subsurface skin scattering, detailed fabric textures on their outfits, cinematic rim lighting, keeping everyone's exact facial identity, outfits, and poses."
+        "Transform the person in this photo into a modern Disney Pixar 3D animated movie character. Expressive large eyes, smooth subsurface scattering skin texture, soft stylized 3D hair strands, cinematic rim lighting, and vibrant depth of field, while strictly preserving the exact hairstyle, outfit details, facial expression, and hand pose from the original photo."
     ),
-
-    // 4. 네온 클럽 분위기 (퍼플·마젠타·블루 네온 조명)
     NEON_CLUB(
         "네온 클럽 무드",
-        "Transform this photo into a dreamy, vibrant nightclub neon portrait. Illuminate the subjects and dark night background with glowing purple, magenta, and electric cyan-blue neon lights, colorful rim lighting along hair and shoulders, and soft atmospheric neon bokeh reflections, while strictly preserving every person's exact facial features, expression, pose, and outfit."
+        "Transform the lighting and atmosphere of this photo into a dreamy late-night neon club aesthetic. Keep the person completely photorealistic, bathed in vibrant purple, magenta, and electric blue neon rim lights, with blurred colorful city bokeh lights in the dark background, preserving the exact face, expression, outfit, and pose."
     ),
-
-    // 5. 르네상스 명화 스타일 (클래식 유화 초상화)
-    RENAISSANCE(
+    RENAISSANCE_OIL(
         "르네상스 명화",
-        "Transform this photo into a classical Renaissance oil painting portrait masterpiece. Rich warm chiaroscuro lighting, soft directional museum light against a deep dark warm umber background, visible fine oil brushstrokes on canvas, timeless classical European portrait aesthetic with subtle antique golden warmth and draped classical fabric elegance, while preserving each person's exact facial likeness, expression, and pose."
+        "Transform this portrait into a classic Renaissance oil painting masterpiece. Rich visible oil brushstrokes on canvas, warm golden chiaroscuro lighting, deep dramatic shadows, vintage classical drapery and aristocratic attire blended naturally with the subject's exact facial features, expression, and pose."
+    ),
+    RETRO_FILM(
+        "Y2K 레트로 필름",
+        "Transform this photo into a nostalgic 1990s vintage analog film photograph. Warm Kodak Portra color grading, subtle natural film grain, soft dreamy lens halation, candid retro flash aesthetic, keeping the person's exact face, outfit, and pose completely faithful to the original."
     );
 
     private final String displayName;
@@ -57,7 +52,7 @@ public enum StyleConcept {
         }
         String clean = conceptName.trim().toUpperCase().replace("-", "_");
 
-        if (clean.contains("BEAUTY") || clean.contains("RETOUCH") || clean.contains("IDOL") || clean.contains("POLAROID") || clean.contains("ORIGINAL") || clean.contains("REAL")) {
+        if (clean.contains("BEAUTY") || clean.contains("RETOUCH") || clean.contains("IDOL") || clean.contains("ORIGINAL") || clean.contains("REAL")) {
             return BEAUTY_RETOUCH;
         }
         if (clean.contains("GHIBLI") || clean.contains("ANIME")) {
@@ -70,7 +65,10 @@ public enum StyleConcept {
             return NEON_CLUB;
         }
         if (clean.contains("RENAISSANCE") || clean.contains("OIL") || clean.contains("CLASSIC") || clean.contains("WATERCOLOR") || clean.contains("CINEMATIC")) {
-            return RENAISSANCE;
+            return RENAISSANCE_OIL;
+        }
+        if (clean.contains("RETRO") || clean.contains("FILM") || clean.contains("Y2K") || clean.contains("POLAROID")) {
+            return RETRO_FILM;
         }
 
         try {

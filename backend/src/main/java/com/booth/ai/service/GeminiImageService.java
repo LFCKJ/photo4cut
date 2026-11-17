@@ -203,7 +203,7 @@ public class GeminiImageService {
                             g = clamp((int) (g * 0.78));
                             b = clamp((int) (b * 1.28 + ((h - y) * 50 / h)));
                         }
-                        case RENAISSANCE -> {
+                        case RENAISSANCE_OIL -> {
                             // 클래식 르네상스 유화 명암 대비(키아로스쿠로) & 따뜻한 앤티크 골드 톤
                             double nx = (x - w * 0.5) / (w * 0.5);
                             double ny = (y - h * 0.45) / (h * 0.55);
@@ -211,6 +211,12 @@ public class GeminiImageService {
                             r = clamp((int) (r * vignette * 1.14 + 12));
                             g = clamp((int) (g * vignette * 1.02 + 6));
                             b = clamp((int) (b * vignette * 0.82));
+                        }
+                        case RETRO_FILM -> {
+                            // 90년대 Y2K 아날로그 필름 색감 & 부드러운 페이드
+                            r = clamp((int) (r * 1.08 + 18));
+                            g = clamp((int) (g * 1.03 + 12));
+                            b = clamp((int) (b * 0.90 + 20));
                         }
                     }
                     out.setRGB(x, y, (r << 16) | (g << 8) | b);
