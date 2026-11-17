@@ -118,8 +118,94 @@ public class PhotoController {
         return ResponseEntity.ok(Map.of(
                 "id", id,
                 "downloadPath", "/api/v1/photos/download/" + id,
+                "viewPath", "/api/v1/photos/view/" + id,
                 "downloadUrl", fullDownloadUrl
         ));
+    }
+
+    /**
+     * 모바일(iOS/Android) QR 스캔 시 사진 앱 저장이 쉬운 뷰어 페이지 제공
+     */
+    @GetMapping(value = "/view/{id}", produces = MediaType.TEXT_HTML_VALUE)
+    public ResponseEntity<String> viewPhotoPage(@PathVariable String id) {
+        byte[] imageBytes = photoStorageService.getPhoto(id);
+        if (imageBytes == null) {
+            return ResponseEntity.status(404).body("<html><body style='background:#0f172a;color:#fff;font-family:sans-serif;text-align:center;padding:40px;'><h2>사진을 찾을 수 없습니다.</h2><p>만료되었거나 잘못된 링크입니다.</p></body></html>");
+        }
+
+        String safeId = id.replaceAll("[^a-zA-Z0-9_-]", "");
+        String html = """
+                <!DOCTYPE html>
+                <html lang="ko">
+                <head>
+                  <meta charset="UTF-8" />
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+                  <title>AI 인생네컷 사진 저장</title>
+                  <style>
+                    body { margin: 0; background: #090d16; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
+                    .badge { background: rgba(236,72,153,0.18); color: #f472b6; border: 1px solid rgba(236,72,153,0.4); padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-bottom: 10px; }
+                    h1 { font-size: 20px; margin: 0 0 6px; }
+                    .tip { font-size: 13px; color: #cbd5e1; text-align: center; line-height: 1.5; margin-bottom: 18px; max-width: 360px; }
+                    .tip b { color: #a3e635; }
+                    .card { width: 100%; max-width: 360px; background: #111827; border: 1px solid #1e293b; border-radius: 18px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+                    .card img { width: 100%; height: auto; border-radius: 10px; display: block; -webkit-touch-callout: default; }
+                    .actions { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+                    .btn-primary { width: 100%; padding: 14px; border: none; border-radius: 14px; background: linear-gradient(90deg, #ec4899, #8b5cf6); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }
+                    .btn-secondary { display: block; text-align: center; padding: 12px; border-radius: 14px; background: #1e293b; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: 700; border: 1px solid #334155; }
+                  </style>
+                </head>
+                <body>
+                  <div class="badge">AI 인생네컷 포토부스</div>
+                  <h1>내 인생네컷 저장하기</h1>
+                  <p class="tip">
+                    <b>iPhone(iOS)</b>: 아래 사진을 <b>길게 꾹 눌러 "사진에 저장"</b>을 누르거나,<br/>
+                    아래 <b>[사진첩에 저장하기]</b> 버튼을 눌러 <b>"이미지 저장"</b>을 선택하세요!
+                  </p>
+                  <div class="card">
+                    <img id="photoImg" src="/api/v1/photos/image/__ID__" alt="AI 인생네컷" />
+                  </div>
+                  <div class="actions">
+                    <button id="shareBtn" class="btn-primary" type="button">사진첩에 저장하기 (공유)</button>
+                    <a class="btn-secondary" href="/api/v1/photos/download/__ID__" download="ai-photo4cut-__ID__.png">파일로 직접 다운로드</a>
+                  </div>
+                  <script>
+                    const shareBtn = document.getElementById('shareBtn');
+                    shareBtn.addEventListener('click', async () => {
+                      try {
+                        const res = await fetch('/api/v1/photos/image/__ID__');
+                        const blob = await res.blob();
+                        const file = new File([blob], 'ai-photo4cut-__ID__.png', { type: 'image/png' });
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                          await navigator.share({ files: [file], title: 'AI 인생네컷' });
+                          return;
+                        }
+                      } catch (e) {}
+                      alert('위 사진을 길게 꾹 눌러 "사진에 저장"을 선택하거나 아래 파일 다운로드를 이용해 주세요.');
+                    });
+                  </script>
+                </body>
+                </html>
+                """.replace("__ID__", safeId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("text/html; charset=UTF-8"))
+                .body(html);
+    }
+
+    /**
+     * 브라우저 인라인 표시용 이미지 스트리밍 (iOS 사진 길게 눌러 저장 지원)
+     */
+    @GetMapping("/image/{id}")
+    public ResponseEntity<byte[]> viewPhotoInline(@PathVariable String id) {
+        byte[] imageBytes = photoStorageService.getPhoto(id);
+        if (imageBytes == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"ai-photo4cut-" + id + ".png\"")
+                .body(imageBytes);
     }
 
     /**

@@ -19,8 +19,9 @@ export default function QrModal({ isOpen, onClose, imageDataUrl }) {
       .then((data) => {
         if (!isMounted) return;
         const baseOrigin = API_ORIGIN || window.location.origin;
-        const url = data.downloadPath
-          ? `${baseOrigin}${data.downloadPath}`
+        const targetPath = data.viewPath || data.downloadPath;
+        const url = targetPath
+          ? `${baseOrigin}${targetPath}`
           : data.downloadUrl;
         setDownloadUrl(url);
       })
