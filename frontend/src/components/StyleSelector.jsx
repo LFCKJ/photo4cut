@@ -159,15 +159,29 @@ export default function StyleSelector({
             return (
               <div
                 key={idx}
-                className="rounded-xl bg-slate-950/80 border border-slate-800/90 overflow-hidden flex flex-col"
+                className="rounded-xl bg-slate-950/80 border border-slate-800/90 overflow-hidden flex flex-col group"
               >
-                <div
-                  className={`h-14 bg-gradient-to-br ${info.previewGradient} relative flex items-center justify-center`}
-                >
-                  <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 text-[10px] font-black text-white backdrop-blur-sm">
+                <div className="aspect-[3/4] w-full relative overflow-hidden bg-slate-900">
+                  {info.exampleImage ? (
+                    <img
+                      src={info.exampleImage}
+                      alt={info.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div
+                      className={`w-full h-full bg-gradient-to-br ${info.previewGradient} flex items-center justify-center`}
+                    >
+                      <IconComp className="w-8 h-8 text-white drop-shadow-md" />
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-slate-950/90 to-transparent pointer-events-none" />
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/75 text-[10px] font-black text-white backdrop-blur-sm border border-white/15">
                     예시 #{idx + 1}
                   </span>
-                  <IconComp className="w-6 h-6 text-white drop-shadow-md" />
+                  <span className="absolute bottom-2 right-2 p-1 rounded-md bg-black/70 backdrop-blur-sm border border-white/10">
+                    <IconComp className="w-3 h-3 text-white" />
+                  </span>
                 </div>
                 <div className="p-2.5 flex-1 flex flex-col justify-between">
                   <div>

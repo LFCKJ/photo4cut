@@ -9,6 +9,7 @@ export const STYLE_PRESETS = [
     iconName: 'Sparkles',
     previewGradient: 'from-rose-400 via-pink-500 to-amber-300',
     exampleCaption: '1컷 추천 · 자연스러운 피부/윤곽 보정',
+    exampleImage: '/examples/example-beauty.jpg',
   },
   {
     id: 'GHIBLI',
@@ -20,6 +21,7 @@ export const STYLE_PRESETS = [
     iconName: 'Wand2',
     previewGradient: 'from-lime-500 via-emerald-500 to-teal-700',
     exampleCaption: '2컷 추천 · 감성 2D 애니메이션 변환',
+    exampleImage: '/examples/example-ghibli.jpg',
   },
   {
     id: 'DISNEY_3D',
@@ -31,6 +33,7 @@ export const STYLE_PRESETS = [
     iconName: 'Heart',
     previewGradient: 'from-sky-400 via-blue-500 to-indigo-700',
     exampleCaption: '2컷 추천 · 입체 3D 애니메이션 변환',
+    exampleImage: '/examples/example-ghibli.jpg',
   },
   {
     id: 'NEON_CLUB',
@@ -42,6 +45,7 @@ export const STYLE_PRESETS = [
     iconName: 'Zap',
     previewGradient: 'from-fuchsia-600 via-purple-700 to-cyan-600',
     exampleCaption: '3컷 추천 · 몽환적인 네온 클럽 조명',
+    exampleImage: '/examples/example-neon.jpg',
   },
   {
     id: 'RENAISSANCE',
@@ -53,6 +57,7 @@ export const STYLE_PRESETS = [
     iconName: 'Crown',
     previewGradient: 'from-amber-600 via-orange-800 to-stone-900',
     exampleCaption: '4컷 추천 · 고전 르네상스 유화 명화',
+    exampleImage: '/examples/example-renaissance.jpg',
   },
 ];
 
