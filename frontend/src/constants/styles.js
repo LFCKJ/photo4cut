@@ -37,14 +37,14 @@ export const STYLE_PRESETS = [
   },
   {
     id: 'NEON_CLUB',
-    name: '네온 클럽 무드',
-    tag: 'Club Neon Light',
-    desc: '어두운 밤 퍼플·마젠타·블루 네온 조명이 감도는 몽환적인 클럽 분위기',
+    name: '네온 무드',
+    tag: 'Neon Mood',
+    desc: '인물은 화사하고 또렷하게, 주변은 퍼플·마젠타·블루 네온 조명이 감도는 몽환적인 분위기',
     badgeColor: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
     dotColor: 'bg-fuchsia-400',
     iconName: 'Zap',
     previewGradient: 'from-fuchsia-600 via-purple-700 to-cyan-600',
-    exampleCaption: '3컷 추천 · 몽환적인 네온 클럽 조명',
+    exampleCaption: '3컷 추천 · 화사한 인물 & 네온 무드',
     exampleImage: '/examples/example-neon.jpg',
   },
   {
@@ -58,6 +58,17 @@ export const STYLE_PRESETS = [
     previewGradient: 'from-amber-600 via-orange-800 to-stone-900',
     exampleCaption: '4컷 추천 · 고전 르네상스 유화 명화',
     exampleImage: '/examples/example-renaissance.jpg',
+  },
+  {
+    id: 'ORIGINAL',
+    name: '원본 (필터 없음)',
+    tag: 'Original Photo',
+    desc: 'AI 변환 없이 촬영한 원본 사진 그대로 깔끔하게 사용',
+    badgeColor: 'bg-slate-500/20 text-slate-200 border-slate-500/40',
+    dotColor: 'bg-slate-400',
+    iconName: 'Camera',
+    previewGradient: 'from-slate-600 via-slate-700 to-slate-800',
+    exampleCaption: '필터 없이 원본 그대로',
   },
 ];
 

@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Eye,
   Check,
+  Camera,
 } from 'lucide-react';
 import { STYLE_PRESETS, DEFAULT_EXAMPLE_STYLES } from '../constants/styles';
 import { transformPhotosApi } from '../api/photoApi';
@@ -21,6 +22,7 @@ const ICON_MAP = {
   Heart,
   Zap,
   Crown,
+  Camera,
 };
 
 export default function StyleSelector({

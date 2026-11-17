@@ -68,24 +68,34 @@ public class AiTransformService {
         List<String> styles = request.getStyles();
         String defaultStyle = StringUtils.hasText(request.getStyle()) ? request.getStyle() : "BEAUTY_RETOUCH";
 
-        List<StyleConcept> slotConcepts = new ArrayList<>();
+        List<String> requestedStyles = new ArrayList<>();
         for (int i = 0; i < rawImages.size(); i++) {
             if (styles != null && i < styles.size() && StringUtils.hasText(styles.get(i))) {
-                slotConcepts.add(StyleConcept.fromString(styles.get(i)));
+                requestedStyles.add(styles.get(i).trim().toUpperCase());
             } else {
-                slotConcepts.add(StyleConcept.fromString(defaultStyle));
+                requestedStyles.add(defaultStyle);
             }
         }
 
         log.info("🍌 4컷 개별 스타일 병렬 변환 시작 (gemini-3.1-flash-image-preview): {}",
-                slotConcepts.stream().map(StyleConcept::name).collect(Collectors.joining(", ")));
+                String.join(", ", requestedStyles));
 
         List<CompletableFuture<String>> futures = new ArrayList<>();
+        List<String> appliedStyleNames = new ArrayList<>();
 
         for (int i = 0; i < rawImages.size(); i++) {
             final int index = i;
             final String rawImage = rawImages.get(i);
-            final StyleConcept concept = slotConcepts.get(i);
+            final String reqStyle = requestedStyles.get(i);
+
+            if ("ORIGINAL".equalsIgnoreCase(reqStyle)) {
+                appliedStyleNames.add("ORIGINAL");
+                futures.add(CompletableFuture.completedFuture(rawImage));
+                continue;
+            }
+
+            final StyleConcept concept = StyleConcept.fromString(reqStyle);
+            appliedStyleNames.add(concept.name());
 
             CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
                 try {
@@ -107,10 +117,6 @@ public class AiTransformService {
 
         List<String> resultImages = futures.stream()
                 .map(CompletableFuture::join)
-                .collect(Collectors.toList());
-
-        List<String> appliedStyleNames = slotConcepts.stream()
-                .map(StyleConcept::name)
                 .collect(Collectors.toList());
 
         return TransformResponse.builder()

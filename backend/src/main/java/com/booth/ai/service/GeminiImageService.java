@@ -198,10 +198,10 @@ public class GeminiImageService {
                             b = clamp((int) (b * 0.95 + 5));
                         }
                         case NEON_CLUB -> {
-                            // 몽환적인 클럽 퍼플/마젠타 & 블루 네온 조명
-                            r = clamp((int) (r * 1.10 + (y * 45 / h)));
-                            g = clamp((int) (g * 0.78));
-                            b = clamp((int) (b * 1.28 + ((h - y) * 50 / h)));
+                            // 인물은 밝게 유지하면서 퍼플/마젠타 & 블루 네온 조명
+                            r = clamp((int) (r * 1.18 + 18 + (y * 30 / h)));
+                            g = clamp((int) (g * 0.92 + 12));
+                            b = clamp((int) (b * 1.28 + 20 + ((h - y) * 35 / h)));
                         }
                         case RENAISSANCE_OIL -> {
                             // 클래식 르네상스 유화 명암 대비(키아로스쿠로) & 따뜻한 앤티크 골드 톤

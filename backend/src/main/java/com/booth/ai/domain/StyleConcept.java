@@ -20,8 +20,8 @@ public enum StyleConcept {
         "Transform the person in this photo into a modern Disney Pixar 3D animated movie character. Expressive large eyes, smooth subsurface scattering skin texture, soft stylized 3D hair strands, cinematic rim lighting, and vibrant depth of field, while strictly preserving the exact hairstyle, outfit details, facial expression, and hand pose from the original photo."
     ),
     NEON_CLUB(
-        "네온 클럽 무드",
-        "Transform the lighting and atmosphere of this photo into a dreamy late-night neon club aesthetic. Keep the person completely photorealistic, bathed in vibrant purple, magenta, and electric blue neon rim lights, with blurred colorful city bokeh lights in the dark background, preserving the exact face, expression, outfit, and pose."
+        "네온 무드",
+        "Transform the lighting and atmosphere of this photo into a dreamy neon mood aesthetic. Keep the person completely photorealistic with a bright, clear, well-lit face and natural luminous skin tone (ensure the face is NOT dark or shadowed), illuminated by vibrant purple, magenta, and electric blue neon rim lights along the hair and shoulders, with colorful blurred neon bokeh lights in the background, preserving the exact face, expression, outfit, and pose."
     ),
     RENAISSANCE_OIL(
         "르네상스 명화",
