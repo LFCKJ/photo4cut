@@ -79,43 +79,43 @@ export default function PrintModal({ isOpen, onClose, imageDataUrl, frameName })
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-2xl text-left">
+    <div className="fixed inset-0 z-50 bg-stone-900/45 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative w-full max-w-md bg-white border border-stone-200 rounded-3xl p-6 shadow-2xl text-left">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full bg-slate-800 hover:bg-slate-700 transition"
+          className="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-900 rounded-full bg-stone-100 hover:bg-stone-200 transition"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="flex items-center gap-2 mb-2">
-          <Printer className="w-6 h-6 text-cyan-400" />
-          <h3 className="text-xl font-bold text-white">포토 프린터 인쇄</h3>
+          <Printer className="w-5 h-5 text-stone-800" />
+          <h3 className="text-lg font-extrabold text-stone-900">포토 프린터 인쇄</h3>
         </div>
-        <p className="text-xs text-slate-400 mb-5">
+        <p className="text-xs text-stone-500 mb-5">
           연결된 포토 프린터나 일반 프린터로 인생네컷을 인쇄합니다.
         </p>
 
         {/* Preview & Options Grid */}
         <div className="flex gap-4 mb-6">
-          <div className="w-28 h-36 bg-black rounded-lg overflow-hidden border border-slate-700 flex-shrink-0 flex items-center justify-center p-1">
+          <div className="w-28 h-36 bg-[#FAF8F5] rounded-xl overflow-hidden border border-stone-200 flex-shrink-0 flex items-center justify-center p-1.5">
             <img src={imageDataUrl} alt="인쇄 미리보기" className="max-h-full max-w-full object-contain" />
           </div>
 
-          <div className="flex-1 space-y-3">
+          <div className="flex-1 space-y-3.5">
             <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">인쇄 용지 규격</label>
+              <label className="text-xs font-bold text-stone-700 block mb-1.5">인쇄 용지 규격</label>
               <div className="grid grid-cols-2 gap-1.5">
                 <button
                   type="button"
                   onClick={() => setPaperSize('4x6')}
-                  className={`py-1.5 px-2 text-xs rounded-lg font-bold border transition ${
+                  className={`py-2 px-2 text-xs rounded-xl font-bold border transition ${
                     paperSize === '4x6'
-                      ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300'
-                      : 'border-slate-700 bg-slate-800 text-slate-400'
+                      ? 'border-stone-900 bg-stone-900 text-white'
+                      : 'border-stone-200 bg-[#FAF8F5] text-stone-600 hover:border-stone-300'
                   }`}
                 >
                   4×6 인치 (포토용지)
@@ -123,10 +123,10 @@ export default function PrintModal({ isOpen, onClose, imageDataUrl, frameName })
                 <button
                   type="button"
                   onClick={() => setPaperSize('a4')}
-                  className={`py-1.5 px-2 text-xs rounded-lg font-bold border transition ${
+                  className={`py-2 px-2 text-xs rounded-xl font-bold border transition ${
                     paperSize === 'a4'
-                      ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300'
-                      : 'border-slate-700 bg-slate-800 text-slate-400'
+                      ? 'border-stone-900 bg-stone-900 text-white'
+                      : 'border-stone-200 bg-[#FAF8F5] text-stone-600 hover:border-stone-300'
                   }`}
                 >
                   A4 용지
@@ -135,17 +135,17 @@ export default function PrintModal({ isOpen, onClose, imageDataUrl, frameName })
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">출력 매수</label>
+              <label className="text-xs font-bold text-stone-700 block mb-1.5">출력 매수</label>
               <div className="flex items-center gap-2">
                 {[1, 2, 4].map((cnt) => (
                   <button
                     key={cnt}
                     type="button"
                     onClick={() => setCopies(cnt)}
-                    className={`py-1 px-3 text-xs rounded-lg font-bold border transition ${
+                    className={`py-1.5 px-3.5 text-xs rounded-xl font-bold border transition ${
                       copies === cnt
-                        ? 'border-pink-500 bg-pink-500/20 text-pink-300'
-                        : 'border-slate-700 bg-slate-800 text-slate-400'
+                        ? 'border-rose-600 bg-rose-50 text-rose-700'
+                        : 'border-stone-200 bg-[#FAF8F5] text-stone-600 hover:border-stone-300'
                     }`}
                   >
                     {cnt}장
@@ -160,9 +160,9 @@ export default function PrintModal({ isOpen, onClose, imageDataUrl, frameName })
         <button
           type="button"
           onClick={handlePrint}
-          className="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-extrabold rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95"
+          className="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95"
         >
-          <Printer className="w-5 h-5" />
+          <Printer className="w-4 h-4 text-rose-400" />
           <span>프린터로 지금 바로 인쇄하기 ({copies}장)</span>
         </button>
       </div>

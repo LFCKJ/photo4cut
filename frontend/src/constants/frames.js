@@ -32,22 +32,6 @@ export const PHOTO_FRAMES = [
     ],
   },
   {
-    id: 'star-polaroid',
-    name: '스타 폴라로이드 4컷 (Star Polaroid)',
-    theme: 'white',
-    type: 'grid',
-    preview: '/frames/frame-star-polaroid-raw.jpg',
-    overlay: '/frames/frame-star-polaroid.png',
-    width: 675,
-    height: 1200,
-    slots: [
-      { id: 0, x: 82, y: 508, width: 228, height: 230 },
-      { id: 1, x: 365, y: 508, width: 222, height: 228 },
-      { id: 2, x: 89, y: 848, width: 218, height: 224 },
-      { id: 3, x: 368, y: 847, width: 218, height: 224 },
-    ],
-  },
-  {
     id: 'vintage-35mm',
     name: '빈티지 35mm 필름 4컷 (Vintage 35mm)',
     theme: 'black',

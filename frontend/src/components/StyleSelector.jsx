@@ -99,15 +99,15 @@ export default function StyleSelector({
   return (
     <div className="w-full flex flex-col space-y-6">
       {/* Step Header */}
-      <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-stone-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-pink-500/20 rounded-lg text-pink-400 border border-pink-500/30">
+            <span className="p-1.5 bg-white rounded-lg text-rose-600 border border-stone-200 shadow-sm">
               <Sparkles className="w-4 h-4" />
             </span>
-            <h3 className="text-base font-bold text-white">4컷 AI 컨셉 & 필터 선택</h3>
+            <h3 className="text-base font-extrabold text-stone-900">4컷 AI 컨셉 & 필터 선택</h3>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-stone-500 mt-1">
             아래 예시를 참고해 4장의 사진마다 원하는 AI 스타일을 자유롭게 조합해 보세요.
           </p>
         </div>
@@ -115,45 +115,45 @@ export default function StyleSelector({
         <button
           type="button"
           onClick={() => onSkipAi(photos)}
-          className="text-xs text-slate-400 hover:text-white underline underline-offset-4 transition shrink-0"
+          className="text-xs font-semibold text-stone-500 hover:text-stone-900 underline underline-offset-4 transition shrink-0"
         >
           AI 변환 없이 원본만 출력
         </button>
       </div>
 
       {/* 1. 4컷 AI 변환 예시 가이드 */}
-      <div className="bg-slate-900/70 rounded-2xl border border-slate-800 p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+      <div className="bg-[#FAF8F5] rounded-2xl border border-stone-200/80 p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5">
           <div className="flex items-center gap-2">
-            <Eye className="w-4 h-4 text-lime-400" />
-            <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+            <Eye className="w-4 h-4 text-stone-700" />
+            <span className="text-xs font-bold text-stone-800 uppercase tracking-wider">
               AI 인생네컷 변환 예시 (추천 조합)
             </span>
           </div>
           <button
             type="button"
             onClick={handleApplyExample}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition self-start sm:self-auto ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition self-start sm:self-auto border ${
               isExampleMatched
-                ? 'bg-lime-500/20 text-lime-300 border border-lime-500/40'
-                : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
+                : 'bg-white hover:bg-stone-50 text-stone-800 border-stone-300'
             }`}
           >
             {isExampleMatched ? (
               <>
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-3.5 h-3.5 text-rose-400" />
                 <span>예시 조합 적용됨</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-3.5 h-3.5 text-lime-400" />
+                <Sparkles className="w-3.5 h-3.5 text-rose-500" />
                 <span>이 예시대로 4컷 맞추기</span>
               </>
             )}
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {DEFAULT_EXAMPLE_STYLES.map((styleId, idx) => {
             const info = getStyleInfo(styleId);
             const IconComp = ICON_MAP[info.iconName] || Sparkles;
@@ -161,9 +161,9 @@ export default function StyleSelector({
             return (
               <div
                 key={idx}
-                className="rounded-xl bg-slate-950/80 border border-slate-800/90 overflow-hidden flex flex-col group"
+                className="rounded-xl bg-white border border-stone-200/90 overflow-hidden flex flex-col group shadow-sm"
               >
-                <div className="aspect-[3/4] w-full relative overflow-hidden bg-slate-900">
+                <div className="aspect-[3/4] w-full relative overflow-hidden bg-stone-100">
                   {info.exampleImage ? (
                     <img
                       src={info.exampleImage}
@@ -177,18 +177,17 @@ export default function StyleSelector({
                       <IconComp className="w-8 h-8 text-white drop-shadow-md" />
                     </div>
                   )}
-                  <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-slate-950/90 to-transparent pointer-events-none" />
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/75 text-[10px] font-black text-white backdrop-blur-sm border border-white/15">
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-white/90 text-[10px] font-bold text-stone-900 backdrop-blur-sm shadow-sm">
                     예시 #{idx + 1}
                   </span>
-                  <span className="absolute bottom-2 right-2 p-1 rounded-md bg-black/70 backdrop-blur-sm border border-white/10">
-                    <IconComp className="w-3 h-3 text-white" />
+                  <span className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-white/90 backdrop-blur-sm shadow-sm">
+                    <IconComp className="w-3 h-3 text-stone-800" />
                   </span>
                 </div>
                 <div className="p-2.5 flex-1 flex flex-col justify-between">
                   <div>
-                    <p className="text-xs font-bold text-white">{info.name}</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                    <p className="text-xs font-bold text-stone-900">{info.name}</p>
+                    <p className="text-[10px] text-stone-500 mt-0.5 leading-snug">
                       {info.exampleCaption}
                     </p>
                   </div>
@@ -201,12 +200,12 @@ export default function StyleSelector({
 
       {/* 2. 4컷 슬롯 선택기 */}
       <div>
-        <div className="flex items-center justify-between mb-2.5">
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 text-stone-900" />
             <span>내 사진별 컨셉 지정 (슬롯을 눌러 변경)</span>
           </label>
-          <span className="text-xs text-pink-400 font-bold">
+          <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold border border-rose-200">
             현재 선택: #{activeSlotIndex + 1}컷
           </span>
         </div>
@@ -223,19 +222,19 @@ export default function StyleSelector({
                 key={idx}
                 type="button"
                 onClick={() => setActiveSlotIndex(idx)}
-                className={`cursor-pointer rounded-2xl p-2.5 border-2 transition-all relative overflow-hidden flex flex-col items-center text-center ${
+                className={`cursor-pointer rounded-2xl p-2.5 border transition-all relative overflow-hidden flex flex-col items-center text-center ${
                   isActive
-                    ? 'border-pink-500 bg-pink-500/10 shadow-lg shadow-pink-500/20 ring-2 ring-pink-500/35 -translate-y-0.5'
-                    : 'border-slate-800 bg-slate-900 hover:border-slate-700'
+                    ? 'border-stone-900 bg-[#FAF8F5] shadow-md ring-2 ring-stone-900/10 -translate-y-0.5'
+                    : 'border-stone-200 bg-white hover:border-stone-400'
                 }`}
               >
                 {/* 컷 번호 뱃지 */}
-                <div className="absolute top-3.5 left-3.5 z-10 px-2 py-0.5 rounded-md text-[10px] font-black bg-black/80 text-white backdrop-blur-sm border border-white/20">
+                <div className="absolute top-3.5 left-3.5 z-10 px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/90 text-stone-900 backdrop-blur-sm shadow-sm">
                   #{idx + 1}컷
                 </div>
 
                 {/* 사진 썸네일 미리보기 */}
-                <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-950 mb-2 relative">
+                <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-stone-100 mb-2.5 relative">
                   {photoSrc && (
                     <img
                       src={photoSrc}
@@ -244,20 +243,20 @@ export default function StyleSelector({
                     />
                   )}
                   <div
-                    className={`absolute inset-0 bg-gradient-to-t ${info.previewGradient} opacity-30 mix-blend-color`}
+                    className={`absolute inset-0 bg-gradient-to-t ${info.previewGradient} opacity-25 mix-blend-color`}
                   />
-                  <div className="absolute bottom-1.5 right-1.5 p-1.5 rounded-lg bg-black/75 backdrop-blur-sm border border-white/10">
-                    <IconComp className="w-3.5 h-3.5 text-white" />
+                  <div className="absolute bottom-1.5 right-1.5 p-1.5 rounded-lg bg-white/90 backdrop-blur-sm shadow-sm">
+                    <IconComp className="w-3.5 h-3.5 text-stone-800" />
                   </div>
                 </div>
 
                 {/* 적용된 컨셉 뱃지 */}
                 <span
-                  className={`w-full text-center text-xs font-bold py-1 px-2 rounded-lg border truncate ${info.badgeColor}`}
+                  className={`w-full text-center text-[11px] font-bold py-1 px-2 rounded-lg border truncate ${info.badgeColor}`}
                 >
                   {info.name}
                 </span>
-                <span className="text-[10px] text-slate-400 mt-1 line-clamp-1">
+                <span className="text-[10px] text-stone-500 mt-1 line-clamp-1">
                   {info.tag}
                 </span>
               </button>
@@ -266,19 +265,19 @@ export default function StyleSelector({
         </div>
       </div>
 
-      {/* 3. 활성화된 슬롯에 적용할 5가지 AI 필터 팔레트 */}
-      <div className="bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
-        <div className="flex items-center justify-between mb-3">
+      {/* 3. 활성화된 슬롯에 적용할 AI 필터 팔레트 */}
+      <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-stone-200/80">
+        <div className="flex items-center justify-between mb-3.5">
           <div className="flex items-center gap-2">
-            <span className="w-6 h-6 rounded-full bg-pink-500 text-white font-bold text-xs flex items-center justify-center shadow-md shadow-pink-500/30">
+            <span className="w-6 h-6 rounded-full bg-stone-900 text-white font-bold text-xs flex items-center justify-center">
               {activeSlotIndex + 1}
             </span>
-            <span className="text-sm font-bold text-white">
+            <span className="text-sm font-bold text-stone-900">
               {activeSlotIndex + 1}번째 컷에 적용할 AI 필터 선택
             </span>
           </div>
-          <span className="text-xs text-slate-400">
-            총 {STYLE_PRESETS.length}가지 AI 스타일
+          <span className="text-xs text-stone-500 font-medium">
+            총 {STYLE_PRESETS.length}가지 스타일
           </span>
         </div>
 
@@ -292,37 +291,37 @@ export default function StyleSelector({
                 key={style.id}
                 type="button"
                 onClick={() => handleSelectStyleForActiveSlot(style.id)}
-                className={`rounded-xl border text-left transition-all overflow-hidden flex flex-col justify-between ${
+                className={`rounded-xl border text-left transition-all overflow-hidden flex flex-col justify-between bg-white ${
                   isSelected
-                    ? 'bg-pink-500/15 border-pink-500 shadow-md shadow-pink-500/20 ring-1 ring-pink-500'
-                    : 'bg-slate-800/70 border-slate-700/70 hover:bg-slate-800 hover:border-slate-600'
+                    ? 'border-stone-900 shadow-md ring-2 ring-stone-900/10'
+                    : 'border-stone-200 hover:border-stone-400'
                 }`}
               >
                 {/* 상단 무드 그라데이션 바 */}
                 <div className={`h-1.5 w-full bg-gradient-to-r ${style.previewGradient}`} />
 
-                <div className="p-3 flex-1 flex flex-col justify-between">
+                <div className="p-3.5 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between w-full mb-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="p-1.5 rounded-lg bg-slate-900/90 border border-slate-700">
-                          <IconComp className="w-3.5 h-3.5 text-pink-400" />
+                        <span className="p-1.5 rounded-lg bg-[#FAF8F5] border border-stone-200">
+                          <IconComp className="w-3.5 h-3.5 text-stone-800" />
                         </span>
                         <div>
-                          <span className="text-xs font-bold text-white block leading-tight">
+                          <span className="text-xs font-bold text-stone-900 block leading-tight">
                             {style.name}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-medium">
+                          <span className="text-[10px] text-stone-500 font-medium">
                             {style.tag}
                           </span>
                         </div>
                       </div>
                       {isSelected && (
-                        <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-rose-600 shrink-0" />
                       )}
                     </div>
 
-                    <p className="text-[11px] text-slate-300/90 leading-relaxed mt-1">
+                    <p className="text-[11px] text-stone-600 leading-relaxed mt-1">
                       {style.desc}
                     </p>
                   </div>
@@ -335,8 +334,8 @@ export default function StyleSelector({
 
       {/* Error Feedback */}
       {errorMessage && (
-        <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-300 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-amber-400" />
+        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
           <span>{errorMessage}</span>
         </div>
       )}
@@ -347,18 +346,18 @@ export default function StyleSelector({
           type="button"
           disabled={isLoading}
           onClick={handleStartTransform}
-          className="w-full py-4 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 text-white font-extrabold text-base rounded-2xl shadow-xl shadow-pink-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99] disabled:opacity-50"
+          className="w-full py-4 bg-stone-900 hover:bg-stone-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg shadow-stone-900/15 flex items-center justify-center gap-2 transition active:scale-[0.99] disabled:opacity-50"
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin text-rose-400" />
               <span>선택한 4가지 컨셉으로 AI 변환 중입니다 (약 5~10초)...</span>
             </>
           ) : (
             <>
-              <Wand2 className="w-5 h-5 text-yellow-300" />
+              <Wand2 className="w-5 h-5 text-rose-400" />
               <span>선택한 컨셉으로 인생네컷 완성하기</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </>
           )}
         </button>

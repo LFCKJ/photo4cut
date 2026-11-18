@@ -204,17 +204,17 @@ export default function PhotoStrip({
 
       {/* Applied Concepts Bar */}
       {appliedStyles && appliedStyles.length > 0 && (
-        <div className="w-full max-w-md mb-4 p-3 bg-slate-900/80 rounded-2xl border border-slate-800 flex flex-col gap-2">
+        <div className="w-full max-w-md mb-5 p-3.5 bg-[#FAF8F5] rounded-2xl border border-stone-200/80 flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+            <span className="text-xs font-bold text-stone-700 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-rose-500" />
               <span>적용된 4가지 컨셉</span>
             </span>
             {onChangeStyles && (
               <button
                 type="button"
                 onClick={onChangeStyles}
-                className="text-xs text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1 transition"
+                className="text-xs text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1 transition"
               >
                 <SlidersHorizontal className="w-3 h-3" /> 컨셉 변경하기
               </button>
@@ -238,30 +238,30 @@ export default function PhotoStrip({
 
       {/* Preview Card */}
       <div
-        className={`relative max-w-sm w-full p-3.5 rounded-2xl border-2 shadow-2xl flex flex-col items-center transition-colors ${
+        className={`relative max-w-sm w-full p-4 rounded-2xl border shadow-[0_20px_50px_-15px_rgba(28,25,23,0.14)] flex flex-col items-center transition-colors ${
           frame.theme === 'black'
-            ? 'bg-gradient-to-b from-slate-800/90 to-slate-900/90 border-slate-600/80 shadow-black/40'
-            : 'bg-gradient-to-b from-slate-950 to-slate-900 border-slate-700 shadow-slate-950/60'
+            ? 'bg-[#F3F0EA] border-stone-200'
+            : 'bg-stone-900 border-stone-800'
         }`}
       >
         {renderedImageUrl ? (
           <img
             src={renderedImageUrl}
             alt="인생네컷 최종본"
-            className={`w-full h-auto rounded-lg shadow-xl object-contain transition-all ${
-              frame.theme === 'black' ? 'ring-1 ring-white/20' : 'ring-1 ring-slate-700'
+            className={`w-full h-auto rounded-lg shadow-lg object-contain transition-all ${
+              frame.theme === 'black' ? 'ring-1 ring-stone-900/10' : 'ring-1 ring-white/15'
             }`}
           />
         ) : (
-          <div className="w-full aspect-[2/3] flex items-center justify-center text-slate-400">
+          <div className="w-full aspect-[2/3] flex items-center justify-center text-stone-400">
             <span>렌더링 중...</span>
           </div>
         )}
 
         {isRendering && (
-          <div className="absolute inset-0 bg-black/60 rounded-2xl flex items-center justify-center backdrop-blur-sm z-10">
-            <span className="text-pink-400 font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5 animate-spin" />
+          <div className="absolute inset-0 bg-white/80 rounded-2xl flex items-center justify-center backdrop-blur-sm z-10">
+            <span className="text-stone-900 font-bold flex items-center gap-2 text-sm">
+              <Sparkles className="w-5 h-5 animate-spin text-rose-500" />
               고해상도 4컷 합성 중...
             </span>
           </div>
@@ -269,49 +269,49 @@ export default function PhotoStrip({
       </div>
 
       {/* Custom Text Setting */}
-      <div className="w-full max-w-md mt-4 flex items-center gap-2">
+      <div className="w-full max-w-md mt-5 flex items-center gap-2">
         <input
           type="text"
           value={customText}
           onChange={(e) => setCustomText(e.target.value)}
           placeholder="사진 하단 문구를 입력하세요"
-          className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pink-500"
+          className="flex-1 bg-[#FAF8F5] border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-stone-900 transition"
         />
         <button
           type="button"
           onClick={renderCanvas}
-          className="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-200 transition"
+          className="px-4 py-2.5 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-xl text-xs font-bold text-stone-800 transition"
         >
           문구 적용
         </button>
       </div>
 
       {/* Action Buttons: Download, QR, Print */}
-      <div className="w-full max-w-md mt-6 grid grid-cols-3 gap-3">
+      <div className="w-full max-w-md mt-5 grid grid-cols-3 gap-3">
         <button
           type="button"
           onClick={handleDownload}
-          className="px-4 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-white font-bold text-sm shadow flex flex-col items-center justify-center gap-1.5 transition active:scale-95"
+          className="px-4 py-3.5 bg-white hover:bg-[#FAF8F5] border border-stone-200 rounded-2xl text-stone-900 font-bold text-xs sm:text-sm shadow-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-95"
         >
-          <Download className="w-5 h-5 text-pink-400" />
+          <Download className="w-5 h-5 text-stone-700" />
           <span>이미지 저장</span>
         </button>
 
         <button
           type="button"
           onClick={onOpenQr}
-          className="px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-xl text-white font-bold text-sm shadow flex flex-col items-center justify-center gap-1.5 transition active:scale-95"
+          className="px-4 py-3.5 bg-stone-900 hover:bg-stone-800 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-lg shadow-stone-900/15 flex flex-col items-center justify-center gap-1.5 transition active:scale-95"
         >
-          <QrCode className="w-5 h-5 text-yellow-300" />
+          <QrCode className="w-5 h-5 text-rose-400" />
           <span>QR 코드 저장</span>
         </button>
 
         <button
           type="button"
           onClick={onOpenPrint}
-          className="px-4 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-white font-bold text-sm shadow flex flex-col items-center justify-center gap-1.5 transition active:scale-95"
+          className="px-4 py-3.5 bg-white hover:bg-[#FAF8F5] border border-stone-200 rounded-2xl text-stone-900 font-bold text-xs sm:text-sm shadow-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-95"
         >
-          <Printer className="w-5 h-5 text-cyan-400" />
+          <Printer className="w-5 h-5 text-stone-700" />
           <span>프린터 인쇄</span>
         </button>
       </div>

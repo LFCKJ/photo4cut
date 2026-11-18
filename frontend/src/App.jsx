@@ -12,9 +12,9 @@ import PrintModal from './components/PrintModal';
 
 const STEPS = [
   { id: 1, name: '프레임 선택' },
-  { id: 2, name: '4컷 사진 촬영' },
-  { id: 3, name: '4컷 컨셉 선택' },
-  { id: 4, name: '인생네컷 완성' },
+  { id: 2, name: '4컷 촬영' },
+  { id: 3, name: 'AI 컨셉' },
+  { id: 4, name: '네컷 완성' },
 ];
 
 export default function App() {
@@ -63,9 +63,10 @@ export default function App() {
   // 폭죽 축하 효과
   const triggerConfetti = () => {
     confetti({
-      particleCount: 90,
-      spread: 70,
+      particleCount: 80,
+      spread: 65,
       origin: { y: 0.6 },
+      colors: ['#1C1917', '#E11D48', '#D6D3D1', '#F43F5E'],
     });
   };
 
@@ -78,58 +79,62 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center py-8 px-4 selection:bg-pink-500 selection:text-white relative overflow-x-hidden">
-      {/* Ambient Studio Glow */}
+    <div className="min-h-screen bg-[#FAF8F5] text-stone-900 flex flex-col items-center py-8 md:py-12 px-4 selection:bg-stone-900 selection:text-white relative overflow-x-hidden">
+      {/* Subtle Editorial Studio Ambient Backdrop */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-0">
-        <div className="absolute -top-32 left-1/4 w-96 h-96 bg-pink-600/15 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -right-24 w-80 h-80 bg-purple-600/15 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 left-1/3 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 left-1/4 w-[32rem] h-[32rem] bg-rose-200/25 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -right-32 w-[28rem] h-[28rem] bg-amber-100/40 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 left-1/3 w-[32rem] h-[32rem] bg-stone-200/40 rounded-full blur-3xl" />
       </div>
 
       {/* Header */}
-      <header className="mb-7 text-center relative z-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-lime-400/15 border border-lime-400/30 text-lime-300 text-[11px] font-extrabold tracking-wide mb-2.5">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>AI로 변신한 나, 영구소장!</span>
+      <header className="mb-8 text-center relative z-10 max-w-2xl">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-stone-200/90 shadow-sm text-stone-600 text-[11px] font-semibold tracking-[0.14em] uppercase mb-3.5">
+          <Sparkles className="w-3 h-3 text-rose-500" />
+          <span>Atelier 4Cut · AI Photo Studio</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-2.5 mb-2 tracking-tight">
-          <Camera className="w-8 h-8 text-pink-400" />
-          <span className="bg-gradient-to-r from-white via-pink-100 to-slate-200 bg-clip-text text-transparent">
-            AI 인생네컷 포토부스
+        <h1 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3 mb-2.5 tracking-tight text-stone-900">
+          <span className="w-10 h-10 rounded-2xl bg-stone-900 text-white flex items-center justify-center shadow-md shadow-stone-900/15">
+            <Camera className="w-5 h-5" />
           </span>
+          <span>AI 인생네컷 스튜디오</span>
         </h1>
-        <p className="text-xs md:text-sm text-slate-400">
-          4가지 AI 컨셉 개별 매칭 • 감성 필름 프레임 • 실시간 AI 변환 • QR & 인쇄
+        <p className="text-xs md:text-sm text-stone-500 font-medium">
+          미니멀 필름 프레임 · 4컷 개별 AI 컨셉 · 고해상도 QR & 포토 인쇄
         </p>
       </header>
 
       {/* Step Indicator */}
       <nav className="w-full max-w-3xl mb-8 relative z-10">
-        <div className="flex items-center justify-between relative px-2">
-          <div className="absolute top-[18px] left-6 right-6 h-0.5 bg-slate-800 -z-0" />
+        <div className="flex items-center justify-between relative px-4">
+          <div className="absolute top-[18px] left-10 right-10 h-[1.5px] bg-stone-200 -z-0" />
           <div
-            className="absolute top-[18px] left-6 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-300 -z-0"
-            style={{ width: `calc(${((currentStep - 1) / (STEPS.length - 1)) * 100}% - 3rem)` }}
+            className="absolute top-[18px] left-10 h-[1.5px] bg-stone-900 transition-all duration-300 -z-0"
+            style={{ width: `calc(${((currentStep - 1) / (STEPS.length - 1)) * 100}% - 5rem)` }}
           />
           {STEPS.map((s) => {
             const isPassed = currentStep > s.id;
             const isCurrent = currentStep === s.id;
             return (
-              <div key={s.id} className="relative z-10 flex flex-col items-center gap-1.5">
+              <div key={s.id} className="relative z-10 flex flex-col items-center gap-2">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-all ${
+                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs border transition-all duration-200 ${
                     isPassed
-                      ? 'bg-pink-500 border-pink-500 text-white shadow-md shadow-pink-500/30'
+                      ? 'bg-stone-900 border-stone-900 text-white shadow-sm'
                       : isCurrent
-                      ? 'bg-slate-900 border-pink-400 text-pink-400 shadow-lg shadow-pink-500/30 scale-110'
-                      : 'bg-slate-900 border-slate-700 text-slate-500'
+                      ? 'bg-white border-stone-900 text-stone-900 shadow-md ring-4 ring-stone-900/5 scale-105'
+                      : 'bg-[#FAF8F5] border-stone-300 text-stone-400'
                   }`}
                 >
-                  {isPassed ? <CheckCircle2 className="w-5 h-5" /> : s.id}
+                  {isPassed ? <CheckCircle2 className="w-4 h-4" /> : `0${s.id}`}
                 </div>
                 <span
-                  className={`text-[11px] font-semibold ${
-                    isCurrent ? 'text-pink-300' : isPassed ? 'text-slate-300' : 'text-slate-500'
+                  className={`text-[11px] tracking-tight ${
+                    isCurrent
+                      ? 'font-bold text-stone-900'
+                      : isPassed
+                      ? 'font-semibold text-stone-600'
+                      : 'font-medium text-stone-400'
                   }`}
                 >
                   {s.name}
@@ -141,23 +146,26 @@ export default function App() {
       </nav>
 
       {/* Main Container */}
-      <main className="w-full max-w-3xl bg-slate-900/85 rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-800/90 backdrop-blur-xl relative z-10">
+      <main className="w-full max-w-3xl bg-white rounded-[28px] p-6 md:p-9 shadow-[0_20px_60px_-15px_rgba(28,25,23,0.08)] border border-stone-200/80 relative z-10">
         {/* Step 1: 포토 프레임 선택 */}
         {currentStep === 1 && (
-          <div className="space-y-6">
+          <div className="space-y-7">
             <FrameSelector
               selectedFrameId={selectedFrame.id}
               onSelectFrame={setSelectedFrame}
             />
 
-            <div className="pt-4 border-t border-slate-800 flex justify-end">
+            <div className="pt-5 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span className="text-xs text-stone-500">
+                선택된 프레임: <strong className="text-stone-900">{selectedFrame.name}</strong>
+              </span>
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-extrabold rounded-2xl shadow-xl flex items-center justify-center gap-2 transition active:scale-95"
+                className="w-full sm:w-auto px-8 py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-sm rounded-2xl shadow-lg shadow-stone-900/15 flex items-center justify-center gap-2 transition active:scale-[0.98]"
               >
                 <span>이 프레임으로 촬영하기</span>
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -166,16 +174,16 @@ export default function App() {
         {/* Step 2: 웹캠 4회 연속 촬영 */}
         {currentStep === 2 && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-4 border-b border-stone-100">
               <button
                 type="button"
                 onClick={() => setCurrentStep(1)}
-                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
+                className="text-xs font-semibold text-stone-500 hover:text-stone-900 flex items-center gap-1.5 transition"
               >
                 <ArrowLeft className="w-4 h-4" /> 프레임 다시 선택
               </button>
-              <span className="text-xs text-pink-400 font-semibold">
-                선택된 프레임: {selectedFrame.name}
+              <span className="text-xs px-3 py-1 rounded-full bg-stone-100 text-stone-700 font-semibold border border-stone-200/70">
+                {selectedFrame.name}
               </span>
             </div>
 
@@ -183,19 +191,19 @@ export default function App() {
           </div>
         )}
 
-        {/* Step 3: 4컷 개별 AI 컨셉 & 스타일 선택 (신규) */}
+        {/* Step 3: 4컷 개별 AI 컨셉 & 스타일 선택 */}
         {currentStep === 3 && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-4 border-b border-stone-100">
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
+                className="text-xs font-semibold text-stone-500 hover:text-stone-900 flex items-center gap-1.5 transition"
               >
                 <ArrowLeft className="w-4 h-4" /> 사진 다시 촬영하기
               </button>
-              <span className="text-xs text-pink-400 font-semibold">
-                촬영 완료: 4장의 사진 준비됨
+              <span className="text-xs px-3 py-1 rounded-full bg-rose-50 text-rose-700 font-semibold border border-rose-200">
+                4컷 촬영 완료
               </span>
             </div>
 
@@ -211,25 +219,25 @@ export default function App() {
         {/* Step 4: 인생네컷 최종 완성본 & 다운로드 / QR / 프린터 */}
         {currentStep === 4 && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">
-                  완성 🎉
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-stone-100">
+              <div className="flex items-center gap-2.5">
+                <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-stone-900 text-white">
+                  COMPLETE
                 </span>
-                <span className="text-sm font-bold text-white">{selectedFrame.name}</span>
+                <span className="text-sm font-bold text-stone-900">{selectedFrame.name}</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <button
                   type="button"
                   onClick={() => setCurrentStep(3)}
-                  className="text-xs text-pink-400 hover:text-pink-300 font-semibold flex items-center gap-1 transition"
+                  className="text-xs text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1 transition"
                 >
-                  <Wand2 className="w-3.5 h-3.5" /> 컨셉 변경하기
+                  <Wand2 className="w-3.5 h-3.5" /> 컨셉 변경
                 </button>
                 <button
                   type="button"
                   onClick={handleResetAll}
-                  className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
+                  className="text-xs text-stone-500 hover:text-stone-900 font-semibold flex items-center gap-1 transition"
                 >
                   <RefreshCw className="w-3.5 h-3.5" /> 처음부터
                 </button>
@@ -248,6 +256,10 @@ export default function App() {
           </div>
         )}
       </main>
+
+      <footer className="mt-8 text-[11px] text-stone-400 tracking-wide relative z-10">
+        ATELIER 4CUT · MODERN MINIMAL PHOTO STUDIO
+      </footer>
 
       {/* QR Code Modal (스마트폰 즉시 다운로드) */}
       <QrModal

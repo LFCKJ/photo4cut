@@ -5,7 +5,7 @@ import { useWebcam } from '../hooks/useWebcam';
 
 // 카메라가 없거나 테스트용 샘플 사진 4장 생성기
 function generateSamplePhotos() {
-  const colors = ['#f43f5e', '#8b5cf6', '#3b82f6', '#10b981'];
+  const colors = ['#e11d48', '#7c3aed', '#0284c7', '#059669'];
   return colors.map((col, idx) => {
     const canvas = document.createElement('canvas');
     canvas.width = 800;
@@ -14,7 +14,7 @@ function generateSamplePhotos() {
 
     const grad = ctx.createLinearGradient(0, 0, 800, 1000);
     grad.addColorStop(0, col);
-    grad.addColorStop(1, '#0f172a');
+    grad.addColorStop(1, '#1c1917');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 800, 1000);
 
@@ -24,18 +24,17 @@ function generateSamplePhotos() {
     ctx.fillText(`포즈 #${idx + 1}`, 400, 480);
 
     ctx.font = '32px sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-    ctx.fillText('인생네컷 샘플 촬영', 400, 550);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillText('ATELIER 4CUT SAMPLE', 400, 550);
 
     return canvas.toDataURL('image/jpeg', 0.95);
   });
 }
 
 export default function CameraView({ onPhotosCaptured }) {
-  const [countdownTime, setCountdownTime] = useState(5); // 기본 5초
+  const [countdownTime, setCountdownTime] = useState(5);
   const {
     webcamRef,
-    cameraReady,
     setCameraReady,
     cameraError,
     setCameraError,
@@ -69,7 +68,15 @@ export default function CameraView({ onPhotosCaptured }) {
   return (
     <div className="w-full flex flex-col items-center">
       {/* Viewport Frame */}
-      <div className="relative w-full max-w-2xl aspect-[4/3] bg-black rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl flex items-center justify-center">
+      <div className="relative w-full max-w-2xl aspect-[4/3] bg-stone-950 rounded-2xl overflow-hidden border border-stone-300 shadow-[0_16px_40px_-12px_rgba(28,25,23,0.18)] flex items-center justify-center">
+        {/* Subtle Studio Viewfinder Corner Guides */}
+        <div className="pointer-events-none absolute inset-4 z-10">
+          <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/40 rounded-tl-sm" />
+          <span className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-white/40 rounded-tr-sm" />
+          <span className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-white/40 rounded-bl-sm" />
+          <span className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/40 rounded-br-sm" />
+        </div>
+
         {/* Webcam Component */}
         <Webcam
           ref={webcamRef}
@@ -90,18 +97,20 @@ export default function CameraView({ onPhotosCaptured }) {
 
         {/* Camera Error / No Device Fallback */}
         {cameraError && (
-          <div className="absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center p-6 text-center z-20">
-            <AlertCircle className="w-12 h-12 text-rose-500 mb-3" />
-            <h4 className="text-lg font-bold text-white mb-1">카메라에 접근할 수 없습니다</h4>
-            <p className="text-sm text-slate-400 mb-4 max-w-md">
-              웹캠 권한을 허용해 주시거나, 카메라가 없는 환경에서는 [테스트용 샘플 사진 4장]으로 바로 체험할 수 있습니다.
+          <div className="absolute inset-0 bg-[#FAF8F5]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center mb-3">
+              <AlertCircle className="w-6 h-6 text-rose-600" />
+            </div>
+            <h4 className="text-lg font-bold text-stone-900 mb-1">카메라에 접근할 수 없습니다</h4>
+            <p className="text-xs sm:text-sm text-stone-500 mb-5 max-w-md leading-relaxed">
+              웹캠 권한을 허용해 주시거나, 카메라가 없는 환경에서는 테스트용 샘플 사진 4장으로 바로 체험할 수 있습니다.
             </p>
             <button
               type="button"
               onClick={handleUseMockPhotos}
-              className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg transition-all flex items-center gap-2"
+              className="px-5 py-3 bg-stone-900 hover:bg-stone-800 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-rose-400" />
               테스트용 샘플 사진 4장으로 진행
             </button>
           </div>
@@ -116,21 +125,23 @@ export default function CameraView({ onPhotosCaptured }) {
 
         {/* Countdown Overlay */}
         {isCapturing && countdown > 0 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[2px] z-20 pointer-events-none">
-            <div className="text-9xl font-black text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] animate-pulse">
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-stone-950/35 backdrop-blur-[2px] z-20 pointer-events-none">
+            <div className="text-8xl sm:text-9xl font-black text-white drop-shadow-[0_10px_25px_rgba(0,0,0,0.65)] animate-pulse tabular-nums">
               {countdown}
             </div>
-            <p className="mt-4 text-xl font-bold text-pink-300 drop-shadow">
-              {currentStep}번째 컷 촬영 중! ({currentStep}/{totalSteps})
+            <p className="mt-4 px-4 py-1.5 rounded-full bg-white/90 text-stone-900 text-xs sm:text-sm font-bold shadow">
+              {currentStep}번째 컷 촬영 중 ({currentStep}/{totalSteps})
             </p>
           </div>
         )}
 
         {/* Current Step Badge */}
         {isCapturing && (
-          <div className="absolute top-4 left-4 z-20 bg-slate-900/80 backdrop-blur border border-slate-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm font-semibold">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
-            <span>촬영 진행 중: {currentStep} / {totalSteps}</span>
+          <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur border border-stone-200 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold text-stone-900 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+            <span>
+              촬영 진행 중 {currentStep} / {totalSteps}
+            </span>
           </div>
         )}
 
@@ -139,7 +150,7 @@ export default function CameraView({ onPhotosCaptured }) {
           <button
             type="button"
             onClick={handleUseMockPhotos}
-            className="absolute top-4 right-4 z-20 bg-slate-900/70 hover:bg-slate-900 text-xs text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 transition"
+            className="absolute top-4 right-4 z-20 bg-white/85 hover:bg-white text-xs font-semibold text-stone-700 hover:text-stone-900 px-3 py-1.5 rounded-full border border-stone-200/80 shadow-sm backdrop-blur transition"
           >
             샘플 사진으로 테스트
           </button>
@@ -154,23 +165,25 @@ export default function CameraView({ onPhotosCaptured }) {
             return (
               <div
                 key={idx}
-                className={`relative aspect-[3/4] rounded-xl overflow-hidden border-2 flex items-center justify-center ${
+                className={`relative aspect-[3/4] rounded-xl overflow-hidden border transition-all flex items-center justify-center ${
                   img
-                    ? 'border-pink-500 bg-slate-800'
+                    ? 'border-stone-900 bg-stone-100 shadow-sm'
                     : isCapturing && currentStep === idx + 1
-                    ? 'border-yellow-400 bg-yellow-400/10 animate-pulse'
-                    : 'border-slate-700 bg-slate-900/80'
+                    ? 'border-rose-500 bg-rose-50 animate-pulse'
+                    : 'border-stone-200 bg-[#FAF8F5]'
                 }`}
               >
                 {img ? (
                   <>
                     <img src={img} alt={`컷 ${idx + 1}`} className="w-full h-full object-cover" />
-                    <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-[11px] font-bold px-1.5 py-0.5 rounded text-white flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3 text-pink-400" /> #{idx + 1}
+                    <span className="absolute bottom-1.5 right-1.5 bg-white/90 text-[10px] font-bold px-1.5 py-0.5 rounded-md text-stone-900 flex items-center gap-1 shadow-sm">
+                      <CheckCircle2 className="w-3 h-3 text-rose-500" /> #{idx + 1}
                     </span>
                   </>
                 ) : (
-                  <span className="text-xs font-semibold text-slate-500">#{idx + 1} 컷</span>
+                  <span className="text-[11px] font-semibold text-stone-400">
+                    CUT 0{idx + 1}
+                  </span>
                 )}
               </div>
             );
@@ -179,20 +192,20 @@ export default function CameraView({ onPhotosCaptured }) {
       </div>
 
       {/* Action Controls */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3.5">
         {!isCapturing && capturedImages.length < 4 && (
           <>
-            <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl text-xs text-slate-300">
-              <span>카운트다운:</span>
+            <div className="flex items-center gap-1.5 bg-[#FAF8F5] border border-stone-200 px-3 py-2 rounded-xl text-xs text-stone-600">
+              <span className="font-semibold mr-1">타이머</span>
               {[3, 5, 8].map((sec) => (
                 <button
                   key={sec}
                   type="button"
                   onClick={() => setCountdownTime(sec)}
-                  className={`px-2 py-1 rounded font-bold ${
+                  className={`px-2.5 py-1 rounded-lg font-bold transition ${
                     countdownTime === sec
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-slate-700 text-slate-400 hover:text-white'
+                      ? 'bg-stone-900 text-white shadow-sm'
+                      : 'bg-white text-stone-500 hover:text-stone-900 border border-stone-200/70'
                   }`}
                 >
                   {sec}초
@@ -203,10 +216,11 @@ export default function CameraView({ onPhotosCaptured }) {
             <button
               type="button"
               onClick={startCaptureSequence}
-              className="px-8 py-3.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-pink-500/30 flex items-center gap-3 transition-transform active:scale-95"
+              className="px-8 py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg shadow-stone-900/15 flex items-center gap-2.5 transition active:scale-[0.98]"
             >
-              <Camera className="w-6 h-6" />
-              4컷 연속 촬영 시작
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+              <Camera className="w-5 h-5" />
+              <span>4컷 연속 촬영 시작</span>
             </button>
           </>
         )}
@@ -215,7 +229,7 @@ export default function CameraView({ onPhotosCaptured }) {
           <button
             type="button"
             onClick={resetCapture}
-            className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-semibold rounded-xl flex items-center gap-2 transition"
+            className="px-6 py-2.5 bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 font-semibold text-sm rounded-xl flex items-center gap-2 transition shadow-sm"
           >
             <RefreshCw className="w-4 h-4" />
             촬영 취소
@@ -226,7 +240,7 @@ export default function CameraView({ onPhotosCaptured }) {
           <button
             type="button"
             onClick={resetCapture}
-            className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-semibold rounded-xl flex items-center gap-2 transition"
+            className="px-6 py-2.5 bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 font-semibold text-sm rounded-xl flex items-center gap-2 transition shadow-sm"
           >
             <RefreshCw className="w-4 h-4" />
             다시 촬영하기
