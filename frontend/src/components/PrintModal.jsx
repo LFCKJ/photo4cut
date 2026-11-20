@@ -43,8 +43,8 @@ export default function PrintModal({ isOpen, onClose, imageDataUrl, frameName })
               page-break-after: always;
             }
             img {
-              max-width: 96%;
-              max-height: 96vh;
+              max-width: ${paperSize === '4x6' ? '100%' : '96%'};
+              max-height: ${paperSize === '4x6' ? '100vh' : '96vh'};
               object-fit: contain;
               box-shadow: none;
             }
@@ -101,8 +101,8 @@ export default function PrintModal({ isOpen, onClose, imageDataUrl, frameName })
 
         {/* Preview & Options Grid */}
         <div className="flex gap-4 mb-6">
-          <div className="w-28 h-36 bg-[#FAF8F5] rounded-xl overflow-hidden border border-stone-200 flex-shrink-0 flex items-center justify-center p-1.5">
-            <img src={imageDataUrl} alt="인쇄 미리보기" className="max-h-full max-w-full object-contain" />
+          <div className="w-24 aspect-[2/3] bg-[#FAF8F5] rounded-xl overflow-hidden border border-stone-200 flex-shrink-0 flex items-center justify-center p-1">
+            <img src={imageDataUrl} alt="인쇄 미리보기" className="w-full h-full object-contain rounded-lg" />
           </div>
 
           <div className="flex-1 space-y-3.5">

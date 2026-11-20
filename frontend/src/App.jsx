@@ -187,7 +187,7 @@ export default function App() {
               </span>
             </div>
 
-            <CameraView onPhotosCaptured={handlePhotosCaptured} />
+            <CameraView frame={selectedFrame} onPhotosCaptured={handlePhotosCaptured} />
           </div>
         )}
 

@@ -124,7 +124,7 @@ export default function PhotoStrip({
     canvas.height = frame.height;
 
     // 1. 배경 색상 채우기
-    ctx.fillStyle = frame.theme === 'black' ? '#000000' : '#ffffff';
+    ctx.fillStyle = frame.bgColor || (frame.theme === 'black' ? '#000000' : '#ffffff');
     ctx.fillRect(0, 0, frame.width, frame.height);
 
     try {
@@ -145,7 +145,10 @@ export default function PhotoStrip({
         try {
           const overlayImg = await loadImageSafe(frame.overlay, null, 2500);
           if (overlayImg) {
-            ctx.drawImage(overlayImg, 0, 0, frame.width, frame.height);
+            const ovW = frame.overlayWidth || frame.width;
+            const ovH = frame.overlayHeight || frame.height;
+            const ovY = frame.overlayOffsetY || 0;
+            ctx.drawImage(overlayImg, 0, ovY, ovW, ovH);
           }
         } catch (e) {
           console.warn('프레임 오버레이 로드 건너뜀:', e);
@@ -165,7 +168,9 @@ export default function PhotoStrip({
         ctx.fillStyle = frame.theme === 'black' ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.65)';
         ctx.textAlign = 'center';
 
-        const textY = frame.height - 14;
+        const bottomSlot = frame.slots[frame.slots.length - 1];
+        const bottomSpace = bottomSlot ? frame.height - (bottomSlot.y + bottomSlot.height) : 40;
+        const textY = bottomSpace > 70 ? frame.height - Math.floor(bottomSpace / 2) + 4 : frame.height - 14;
         ctx.fillText(`${customText} | ${dateStr}`, frame.width / 2, textY);
         ctx.restore();
       }
@@ -248,7 +253,7 @@ export default function PhotoStrip({
           <img
             src={renderedImageUrl}
             alt="인생네컷 최종본"
-            className={`w-full h-auto rounded-lg shadow-lg object-contain transition-all ${
+            className={`w-full aspect-[2/3] rounded-lg shadow-lg object-contain transition-all ${
               frame.theme === 'black' ? 'ring-1 ring-stone-900/10' : 'ring-1 ring-white/15'
             }`}
           />

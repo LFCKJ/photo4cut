@@ -68,21 +68,27 @@ export default function FrameSelector({ selectedFrameId, onSelectFrame }) {
                 <Check className="w-3.5 h-3.5 stroke-[3]" />
               </div>
 
-              {/* Thumbnail Display Box */}
+              {/* Thumbnail Display Box (4x6 포토카드 비율 2:3) */}
               <div
-                className={`w-full h-52 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3.5 transition-colors border ${getThumbnailBackdrop(
+                className={`w-full h-56 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3.5 transition-colors border ${getThumbnailBackdrop(
                   frame
                 )}`}
               >
-                <img
-                  src={frame.preview}
-                  alt={frame.name}
-                  className={`max-h-full max-w-full object-contain rounded transition-transform duration-300 group-hover:scale-105 ${
+                <div
+                  className={`h-full aspect-[2/3] rounded overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${
                     isBlackFrame
-                      ? 'drop-shadow-[0_10px_18px_rgba(28,25,23,0.22)]'
-                      : 'drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]'
+                      ? 'bg-black drop-shadow-[0_10px_18px_rgba(28,25,23,0.22)]'
+                      : 'bg-[#f4f4f4] drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]'
                   }`}
-                />
+                >
+                  <img
+                    src={frame.preview}
+                    alt={frame.name}
+                    className={`w-full h-full ${
+                      frame.overlayOffsetY < 0 ? 'object-cover object-center' : 'object-contain'
+                    }`}
+                  />
+                </div>
               </div>
 
               {/* Title & Info Bar */}

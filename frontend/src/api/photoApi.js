@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 // Vercel 등 외부 배포 시 VITE_API_BASE_URL 환경변수 사용 (예: https://123.45.67.89.nip.io)
-// 미설정 시 로컬 Vite 프록시 또는 Vercel Rewrites를 타도록 상대 경로('') 사용
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+// 프로덕션에서 미설정 시 Vercel Rewrite 프록시 타임아웃/용량 제한을 피하기 위해 백엔드 HTTPS 주소로 직접 연결
+const DEFAULT_PROD_API_URL = 'https://129.225.193.240.nip.io';
+const rawBaseUrl =
+  import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? DEFAULT_PROD_API_URL : '');
 export const API_ORIGIN = rawBaseUrl.replace(/\/+$/, '');
 const API_BASE = `${API_ORIGIN}/api/v1/photos`;
 

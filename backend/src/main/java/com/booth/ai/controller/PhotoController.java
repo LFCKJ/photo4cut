@@ -1,3 +1,4 @@
+
 package com.booth.ai.controller;
 
 import com.booth.ai.dto.PhotoDto;

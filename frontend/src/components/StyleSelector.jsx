@@ -27,9 +27,12 @@ const ICON_MAP = {
 
 export default function StyleSelector({
   photos,
+  frame,
   onTransformComplete,
   onSkipAi,
 }) {
+  const firstSlot = frame?.slots?.[0];
+  const slotAspect = firstSlot ? firstSlot.width / firstSlot.height : 2 / 3;
   // 4개 슬롯 각각에 지정된 스타일 ID (기본값: AI 뷰티 보정 -> 지브리 -> 네온 클럽 -> 르네상스)
   const [selectedStyles, setSelectedStyles] = useState([...DEFAULT_EXAMPLE_STYLES]);
 
@@ -234,7 +237,10 @@ export default function StyleSelector({
                 </div>
 
                 {/* 사진 썸네일 미리보기 */}
-                <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-stone-100 mb-2.5 relative">
+                <div
+                  style={{ aspectRatio: slotAspect }}
+                  className="w-full rounded-xl overflow-hidden bg-stone-100 mb-2.5 relative"
+                >
                   {photoSrc && (
                     <img
                       src={photoSrc}

@@ -3,36 +3,44 @@ import Webcam from 'react-webcam';
 import { Camera, RefreshCw, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useWebcam } from '../hooks/useWebcam';
 
-// 카메라가 없거나 테스트용 샘플 사진 4장 생성기
-function generateSamplePhotos() {
+// 카메라가 없거나 테스트용 샘플 사진 4장 생성기 (선택된 프레임 슬롯 비율에 맞춤)
+function generateSamplePhotos(slotAspect = 2 / 3) {
   const colors = ['#e11d48', '#7c3aed', '#0284c7', '#059669'];
+  const baseDim = 1000;
+  const width = slotAspect >= 1 ? baseDim : Math.round(baseDim * slotAspect);
+  const height = slotAspect >= 1 ? Math.round(baseDim / slotAspect) : baseDim;
+
   return colors.map((col, idx) => {
     const canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 1000;
+    canvas.width = width;
+    canvas.height = height;
     const ctx = canvas.getContext('2d');
 
-    const grad = ctx.createLinearGradient(0, 0, 800, 1000);
+    const grad = ctx.createLinearGradient(0, 0, width, height);
     grad.addColorStop(0, col);
     grad.addColorStop(1, '#1c1917');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 800, 1000);
+    ctx.fillRect(0, 0, width, height);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 72px sans-serif';
+    ctx.font = `bold ${Math.round(Math.min(width, height) * 0.09)}px sans-serif`;
     ctx.textAlign = 'center';
-    ctx.fillText(`포즈 #${idx + 1}`, 400, 480);
+    ctx.fillText(`포즈 #${idx + 1}`, width / 2, height * 0.48);
 
-    ctx.font = '32px sans-serif';
+    ctx.font = `${Math.round(Math.min(width, height) * 0.04)}px sans-serif`;
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.fillText('ATELIER 4CUT SAMPLE', 400, 550);
+    ctx.fillText('ATELIER 4CUT SAMPLE', width / 2, height * 0.56);
 
     return canvas.toDataURL('image/jpeg', 0.95);
   });
 }
 
-export default function CameraView({ onPhotosCaptured }) {
+export default function CameraView({ frame, onPhotosCaptured }) {
   const [countdownTime, setCountdownTime] = useState(5);
+  const firstSlot = frame?.slots?.[0];
+  const slotAspect = firstSlot ? firstSlot.width / firstSlot.height : 2 / 3;
+  const isPortraitSlot = slotAspect < 1;
+
   const {
     webcamRef,
     setCameraReady,
@@ -49,6 +57,7 @@ export default function CameraView({ onPhotosCaptured }) {
   } = useWebcam({
     captureCount: 4,
     countdownSeconds: countdownTime,
+    targetAspectRatio: slotAspect,
     onComplete: (photos) => {
       if (onPhotosCaptured) onPhotosCaptured(photos);
     },
@@ -61,14 +70,19 @@ export default function CameraView({ onPhotosCaptured }) {
   };
 
   const handleUseMockPhotos = () => {
-    const samples = generateSamplePhotos();
+    const samples = generateSamplePhotos(slotAspect);
     if (onPhotosCaptured) onPhotosCaptured(samples);
   };
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Viewport Frame */}
-      <div className="relative w-full max-w-2xl aspect-[4/3] bg-stone-950 rounded-2xl overflow-hidden border border-stone-300 shadow-[0_16px_40px_-12px_rgba(28,25,23,0.18)] flex items-center justify-center">
+      {/* Viewport Frame (선택된 프레임 슬롯 비율과 일치) */}
+      <div
+        style={{ aspectRatio: slotAspect }}
+        className={`relative w-full ${
+          isPortraitSlot ? 'max-w-sm' : 'max-w-xl'
+        } bg-stone-950 rounded-2xl overflow-hidden border border-stone-300 shadow-[0_16px_40px_-12px_rgba(28,25,23,0.18)] flex items-center justify-center`}
+      >
         {/* Subtle Studio Viewfinder Corner Guides */}
         <div className="pointer-events-none absolute inset-4 z-10">
           <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/40 rounded-tl-sm" />
@@ -165,7 +179,8 @@ export default function CameraView({ onPhotosCaptured }) {
             return (
               <div
                 key={idx}
-                className={`relative aspect-[3/4] rounded-xl overflow-hidden border transition-all flex items-center justify-center ${
+                style={{ aspectRatio: slotAspect }}
+                className={`relative rounded-xl overflow-hidden border transition-all flex items-center justify-center ${
                   img
                     ? 'border-stone-900 bg-stone-100 shadow-sm'
                     : isCapturing && currentStep === idx + 1
